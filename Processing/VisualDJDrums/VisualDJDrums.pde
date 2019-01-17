@@ -10,7 +10,8 @@ int numberOfSounds = 24;
 SoundFile[] pads = new SoundFile[numberOfSounds];
 
 void setup() {
-  size(640, 360);
+  //size(640, 360);
+  fullScreen();
   background(255);
   
   for(int i = 1; i <= numberOfSounds; i++) {
@@ -21,13 +22,10 @@ void setup() {
   printArray(Serial.list());
   // Open the port you are using at the rate you want:
   myPort = new Serial(this, Serial.list()[2], 9600);
-}      
+}
 
-void draw() {
-  while (myPort.available() > 0) {
-    char key = (char)myPort.read();
-    println(key);
-    switch(key) {
+void playSound(char key) {
+  switch(key) {
     case 'a': pads[16].play(); break;
     case 's': pads[17].play(); break;
     case 'd': pads[19].play(); break;
@@ -43,6 +41,14 @@ void draw() {
     case 'b': pads[10].play(); break;
     case 'n': pads[11].play(); break;
   } 
+}
+
+void draw() {
+  while (myPort.available() > 0) {
+    char key = (char)myPort.read();
+    playSound(key);
+    //println(key);
+    background(random(255), random(255), random(255)); 
   }
 }
 

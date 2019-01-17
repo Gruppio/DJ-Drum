@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
-#define START_PIN 2
+#define START_PIN 36
 #define NUMBER_OF_PINS 18
-#define DEBOUNCE_TIME 100
+#define DEBOUNCE_TIME 200
 
 char characters[] = {'z', 'x', 'c', 'v', 'b', 'n', 'a', 's', 'd', 'f', 'g', 'h', 'q', 'w', 'e', 'r', 't', 'y'};
 bool oldValues[NUMBER_OF_PINS];
