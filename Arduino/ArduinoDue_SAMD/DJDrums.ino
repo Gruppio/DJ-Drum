@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Keyboard.h>
 
 #define START_PIN 36
 #define NUMBER_OF_PINS 18
@@ -6,6 +7,7 @@
 
 char startCharacters[] = {'Q', 'W', 'E', 'R', 'T', 'Y', 'A', 'S', 'D', 'F', 'G', 'H', 'Z', 'X', 'C', 'V', 'B', 'N'};
 char stopCharacters[] = {'q', 'w', 'e', 'r', 't', 'y', 'a', 's', 'd', 'f', 'g', 'h', 'z', 'x', 'c', 'v', 'b', 'n'};
+char keyboardCharacters[] = {'a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 'p', ';', '\''};
 unsigned long lastChangedTime[NUMBER_OF_PINS];
 uint8_t previousPressedState[NUMBER_OF_PINS];
 
@@ -20,7 +22,8 @@ void setup()
   memset(previousPressedState, 0, sizeof(previousPressedState));
 
   //pinMode(LED_BUILTIN, OUTPUT);
-  Serial.begin(9600);
+  //Serial.begin(9600);
+  Keyboard.begin();
 }
 
 void loop()
@@ -34,7 +37,13 @@ void loop()
 
       if (isPressedState == previousPressedState[i])
         continue;
-      Serial.print(isPressedState ? startCharacters[i] : stopCharacters[i]);
+
+      if(isPressedState) {
+        Keyboard.press(keyboardCharacters[i]);
+      } else {
+        Keyboard.release(keyboardCharacters[i]);
+      }
+      //Serial.print(isPressedState ? startCharacters[i] : stopCharacters[i]);
       lastChangedTime[i] = t;
       previousPressedState[i] = isPressedState;
     }
