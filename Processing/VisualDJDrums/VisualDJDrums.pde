@@ -10,8 +10,8 @@ int numberOfSounds = 24;
 SoundFile[] pads = new SoundFile[numberOfSounds];
 
 void setup() {
-  //size(640, 360);
-  fullScreen();
+  size(640, 360);
+  //fullScreen();
   background(255);
   
   for(int i = 1; i <= numberOfSounds; i++) {
@@ -26,6 +26,7 @@ void setup() {
 
 void playSound(char key) {
   switch(key) {
+    /*
     case 'a': pads[16].play(); break;
     case 's': pads[17].play(); break;
     case 'd': pads[19].play(); break;
@@ -39,7 +40,22 @@ void playSound(char key) {
     case 'c': pads[7].play(); break;
     case 'v': pads[8].play(); break;
     case 'b': pads[10].play(); break;
-    case 'n': pads[11].play(); break;
+    case 'n': pads[11].play(); break;*/
+    
+    case 'e': pads[16].play(); break;
+    case 'r': pads[17].play(); break;
+    case 'd': pads[19].play(); break;
+    case 'f': pads[20].play(); break;
+    case 'c': pads[21].play(); break;
+    case 'v': pads[22].play(); break;
+    case 'b': pads[23].play(); break;
+    
+    case 'q': pads[4].play(); break;
+    case 'w': pads[5].play(); break;
+    case 'a': pads[7].play(); break;
+    case 's': pads[8].play(); break;
+    case 'z': pads[10].play(); break;
+    case 'x': pads[11].play(); break;
   } 
 }
 
