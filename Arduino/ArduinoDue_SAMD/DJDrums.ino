@@ -8,10 +8,8 @@
 #define NUMBER_OF_PINS 18
 #define DEBOUNCE_TIME 50
 
-char startCharacters[] = {'Q', 'W', 'E', 'R', 'T', 'Y', 'A', 'S', 'D', 'F', 'G', 'H', 'Z', 'X', 'C', 'V', 'B', 'N'};
-char stopCharacters[] = {'q', 'w', 'e', 'r', 't', 'y', 'a', 's', 'd', 'f', 'g', 'h', 'z', 'x', 'c', 'v', 'b', 'n'};
-//char keyboardCharacters[] = {'a', 'w', 's', 'e', 'd', 'f', 't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 'p', ';', '\''};
-//char keyboardCharacters[] = {'w', 'e', 't', 'y', 'u', 'j', 'a', 's', 'd', 'f', 'g', 'h', 'k', 'l', ';', '\'','o', 'p'};
+// char startCharacters[] = {'Q', 'W', 'E', 'R', 'T', 'Y', 'A', 'S', 'D', 'F', 'G', 'H', 'Z', 'X', 'C', 'V', 'B', 'N'};
+// char stopCharacters[] = {'q', 'w', 'e', 'r', 't', 'y', 'a', 's', 'd', 'f', 'g', 'h', 'z', 'x', 'c', 'v', 'b', 'n'};
 char keyboardCharacters[] = { 'w', 'e', 't', 'y', 'u', 'o', 
                               'a', 's', 'd', 'f', 'g', 'h', 
                               'j', 'k', 'l', ';', '\'', 'p'};
