@@ -2,7 +2,7 @@
 //#include <Keyboard.h>
 #include <MIDIUSB.h>
 
-// In order to flash the arduino Due(milanove) you have to download the SAMD board in the board manager
+// In order to flash the arduino Due(milanove) you have to download the SAMD ( search for "DUE" ) board in the board manager
 // keep press the erase button, then press the reset button and then you can program it
 
 #define velocity 64
