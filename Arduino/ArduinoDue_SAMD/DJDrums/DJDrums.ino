@@ -1,9 +1,11 @@
 #include <Arduino.h>
 //#include <Keyboard.h>
 #include <MIDIUSB.h>
+#include "Throttle/Throttle.h"
 
 // In order to flash the arduino Due(milanove) you have to download the SAMD ( search for "DUE" ) board in the board manager
 // keep press the erase button, then press the reset button and then you can program it
+// You need to install also MIDIUSB lib
 
 #define velocity 64
 #define channel 0
