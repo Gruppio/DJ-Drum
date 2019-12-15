@@ -19,7 +19,7 @@
 #define NUMBER_OF_MODALITIES 21
 #define DEFAULT_OCTAVE 4
 
-#define DEBUG 0
+#define DEBUG 1
 #define SERIAL_ENABLED 0
 
 #define DIO 2 // Pink wire
@@ -71,13 +71,13 @@ int padOffsetsWithIntonation[] = {-10, -8, -7, -5, -3, -1,
                                   0, 3, 5, 6, 8, 10,
                                   12, 13, 15, 17, 18, 20};
 
-Throttle pads[NUMBER_OF_PADS];
-Throttle increaseModalityButton(22, INPUT_PULLUP, 100);
+Throttle pads[NUMBER_OF_PADS]; // 22 27
+Throttle increaseModalityButton(25, INPUT_PULLUP, 100);
 Throttle decreaseModalityButton(23, INPUT_PULLUP, 100);
-Throttle increaseOctaveButton(24, INPUT_PULLUP, 100);
-Throttle decreaseOctaveButton(25, INPUT_PULLUP, 100);
-Throttle increaseIntonationButton(26, INPUT_PULLUP, 100);
-Throttle decreaseIntonationButton(27, INPUT_PULLUP, 100);
+Throttle increaseOctaveButton(27, INPUT_PULLUP, 100);
+Throttle decreaseOctaveButton(22, INPUT_PULLUP, 100);
+Throttle increaseIntonationButton(24, INPUT_PULLUP, 100);
+Throttle decreaseIntonationButton(26, INPUT_PULLUP, 100);
 
 
 int modality = 11;
@@ -87,36 +87,42 @@ int intonationForModality[NUMBER_OF_MODALITIES];
 void increaseModality() {
   modality = constrain(modality + 1, 0, NUMBER_OF_MODALITIES);
   updateDisplay();
+  print("Increase Modality");
   printState();
 }
 
 void decreaseModality() {
   modality = constrain(modality - 1, 0, NUMBER_OF_MODALITIES);
   updateDisplay();
+  print("Decrease Modality");
   printState();
 }
 
 void increaseOctave() {
   octaveForModality[modality] = constrain(octaveForModality[modality] + 1, 0, 7);
   updateDisplay();
+  print("Increase Octave");
   printState();
 }
 
 void decreaseOctave() {
   octaveForModality[modality] = constrain(octaveForModality[modality] - 1, 0, 7);
   updateDisplay();
+  print("Decrease Octave");
   printState();
 }
 
 void increaseIntonation() {
   intonationForModality[modality] = constrain(intonationForModality[modality] + 1, 0, 11);
   updateDisplay();
+  print("Increase Intonation");
   printState();
 }
 
 void decreaseIntonation() {
   intonationForModality[modality] = constrain(intonationForModality[modality] - 1, 0, 11);
   updateDisplay();
+  print("Decrease Intonation");
   printState();
 }
 
@@ -222,7 +228,7 @@ byte digitFor(char character) {
     case 'h': return 0b01110110;    // H
     case 'k': return 0b01110110;    // K
     case 'i': return 0b00000110;    // I
-    case 'l': return 0b00110100;    // L
+    case 'l': return 0b00111000;    // L
     case 'm': return 0b00110111;    // M
     case 'n': return 0b01010100;    // N
     case 'o': return 0b00111111;    // O
@@ -245,7 +251,7 @@ byte digitFor(char character) {
 
 byte digitFor(char character, bool point) {
   byte value = digitFor(character);
-  return point ? (0b10000000 | value) : value;
+  return point ? (value | 0x80) : value;
 }
 
 byte getModalityDigit() {
@@ -284,7 +290,7 @@ byte getIntonationDigits(bool first) {
     return first ? digitFor('f') : digitFor('a');
 
   case 6:
-    return first ? digitFor('f') : digitFor('H');
+    return first ? digitFor('f') : digitFor('h');
 
   case 7:
     return first ? digitFor('s') : digitFor('o');
@@ -312,6 +318,8 @@ void updateDisplay() {
   digits[1] = getOctaveDigit();
   digits[2] = getIntonationDigits(true);
   digits[3] = getIntonationDigits(false);
+  digits[0] |= 0b10000000;
+  digits[1] |= 0b10000000;
   display.setSegments(digits, 4, 0);
 }
 
@@ -332,13 +340,6 @@ void setup()
     intonationForModality[i] = 0;
     octaveForModality[i] = DEFAULT_OCTAVE;
   }
-
-  increaseModalityButton.attach(22, INPUT_PULLUP);
-  decreaseModalityButton.attach(23, INPUT_PULLUP);
-  increaseOctaveButton.attach(24, INPUT_PULLUP);
-  decreaseOctaveButton.attach(25, INPUT_PULLUP);
-  increaseIntonationButton.attach(26, INPUT_PULLUP);
-  decreaseIntonationButton.attach(27, INPUT_PULLUP);
 
   Serial.begin(9600);
 
@@ -387,12 +388,25 @@ void loop()
   MidiUSB.flush();
 }
 
+void print(String s) {
+  if (DEBUG) {
+    Serial.print(s);
+  }
+}
+
+void println(String s) {
+  if (DEBUG) {
+    Serial.println(s);
+  }
+}
+
 void printState() {
   if (DEBUG) {
     Serial.println("");
     Serial.println("Current State:");
     Serial.print("Modality: "); Serial.println(modality);
     Serial.print("Octave: "); Serial.println(octaveForModality[modality]);
+    Serial.print("Should Use Intonation: "); Serial.println(shouldUseIntonation());
     Serial.print("Intonation: "); Serial.println(intonationForModality[modality]);
     Serial.println("");
   }
