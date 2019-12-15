@@ -19,7 +19,7 @@
 #define NUMBER_OF_MODALITIES 21
 #define DEFAULT_OCTAVE 4
 
-#define DEBUG 1
+#define DEBUG 0
 #define SERIAL_ENABLED 0
 
 #define DIO 2 // Pink wire
@@ -46,13 +46,13 @@
 // Pad Number
 // (Offset)
 //     1      2      3      4      5      6
-// ( -10 ) ( -8 ) ( -7 ) ( -5 ) ( -3 ) ( -1 )
+// ( -9 ) ( -7 ) ( -6 ) ( -4 ) ( -2 ) ( -1 )
 
 //   7     8     9    10     11    12
-// ( 0 ) ( 3 ) ( 5 ) ( 6 ) ( 8 ) ( 10 )
+// ( 0 ) ( 2 ) ( 4 ) ( 5 ) ( 7 ) ( 9 )
 
 //   13    14    15    16    17    18
-// ( 12 )( 13 )( 15 )( 17 )( 18 )( 20 )
+// ( 11 )( 12 )( 14 )( 16 )( 17 )( 19 )
 
 
 // char startCharacters[] = {'Q', 'W', 'E', 'R', 'T', 'Y', 'A', 'S', 'D', 'F', 'G', 'H', 'Z', 'X', 'C', 'V', 'B', 'N'};
@@ -67,17 +67,17 @@ int padOffsetsWithNoIntonation[] = {1, 3, 6, 8, 10, 13,
                                     0, 2, 4, 5, 7, 9,
                                     11, 12, 14, 16, 17, 15};
 
-int padOffsetsWithIntonation[] = {-10, -8, -7, -5, -3, -1,
-                                  0, 3, 5, 6, 8, 10,
-                                  12, 13, 15, 17, 18, 20};
+int padOffsetsWithIntonation[] = {-9, -7, -6, -4, -2, -1,
+                                  0, 2, 4, 5, 7, 9,
+                                  11, 12, 14, 16, 17, 19};
 
 Throttle pads[NUMBER_OF_PADS]; // 22 27
-Throttle increaseModalityButton(25, INPUT_PULLUP, 100);
-Throttle decreaseModalityButton(23, INPUT_PULLUP, 100);
-Throttle increaseOctaveButton(27, INPUT_PULLUP, 100);
-Throttle decreaseOctaveButton(22, INPUT_PULLUP, 100);
-Throttle increaseIntonationButton(24, INPUT_PULLUP, 100);
-Throttle decreaseIntonationButton(26, INPUT_PULLUP, 100);
+Throttle increaseModalityButton(23, INPUT_PULLUP, 100);
+Throttle decreaseModalityButton(25, INPUT_PULLUP, 100);
+Throttle increaseOctaveButton(22, INPUT_PULLUP, 100);
+Throttle decreaseOctaveButton(27, INPUT_PULLUP, 100);
+Throttle increaseIntonationButton(26, INPUT_PULLUP, 100);
+Throttle decreaseIntonationButton(24, INPUT_PULLUP, 100);
 
 
 int modality = 11;
@@ -318,8 +318,9 @@ void updateDisplay() {
   digits[1] = getOctaveDigit();
   digits[2] = getIntonationDigits(true);
   digits[3] = getIntonationDigits(false);
-  digits[0] |= 0b10000000;
-  digits[1] |= 0b10000000;
+  if (shouldUseIntonation()) {
+    digits[1] |= 0b10000000;
+  }
   display.setSegments(digits, 4, 0);
 }
 
