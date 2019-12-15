@@ -268,6 +268,9 @@ byte getOctaveDigit() {
 }
 
 byte getIntonationDigits(bool first) {
+  if (!shouldUseIntonation()) {
+    return 0;
+  }
   byte intonation = getIntonation();
   switch (intonation)
   {
