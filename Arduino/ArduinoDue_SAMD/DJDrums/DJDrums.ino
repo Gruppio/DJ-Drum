@@ -2,6 +2,11 @@
 #include <Arduino.h>
 #include <MIDIUSB.h>
 #include <TM1637Display.h>
+#include <Adafruit_NeoPixel.h>
+
+#define PIXEL_PIN   4
+#define NUM_PIXELS  108
+#define COLOR uint32_t
 
 // In order to flash the arduino Due(milanove) you have to download the SAMD ( search for "DUE" ) board in the board manager
 // keep press the erase button, then press the reset button and then you can program it
@@ -71,6 +76,9 @@ int padOffsetsWithIntonation[] = {-9, -7, -6, -4, -2, -1,
                                   0, 2, 4, 5, 7, 9,
                                   11, 12, 14, 16, 17, 19};
 
+uint32_t activatedColors[NUMBER_OF_PADS];
+uint32_t deactivatedColors[NUMBER_OF_PADS];
+
 Throttle pads[NUMBER_OF_PADS]; // 22 27
 Throttle increaseModalityButton(23, INPUT_PULLUP, 100);
 Throttle decreaseModalityButton(25, INPUT_PULLUP, 100);
@@ -79,14 +87,83 @@ Throttle decreaseOctaveButton(27, INPUT_PULLUP, 100);
 Throttle increaseIntonationButton(26, INPUT_PULLUP, 100);
 Throttle decreaseIntonationButton(24, INPUT_PULLUP, 100);
 
+//         Do     Do# Re Re# Mi Fa Fa# Sol Sol# LA  LA# SI
+enum Note {C = 0, Cd, D, Dd, E, F, Fd,  G,  Gd,  A, Ad, B};
+
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_PIXELS, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 int modality = 11;
 int octaveForModality[NUMBER_OF_MODALITIES];
 int intonationForModality[NUMBER_OF_MODALITIES];
 
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t getColorWheel(byte index, byte intensity) {
+  float floatIndex = (float) index;
+  floatIndex /= 85;
+  
+   if(index < 85) {
+       return pixels.Color(floatIndex * intensity, (1 - floatIndex) * intensity, 0);
+   } else if(index < 170) {
+       floatIndex -= 1;
+       return pixels.Color((1 - floatIndex) * intensity, 0, floatIndex * intensity);
+   } else {
+       floatIndex -= 2;
+       return pixels.Color(0, floatIndex * intensity, (1 - floatIndex) * intensity);
+   }
+}
+
+void setAllPixelsColor(COLOR color) {
+  for (int i = 0; i < NUM_PIXELS; i++) {
+    pixels.setPixelColor(i, color);
+  }
+  pixels.show();
+}
+
+void setPadColor(int pad, COLOR color) {
+  /*
+  if (pad > 5 && pad < 12) {
+    for (int i = 0; i < 6; i++) {
+      int pixelIndex = (NUM_PIXELS / 3) + ((pad - 6) * 6) - i;
+      pixels.setPixelColor(pixelIndex, color);
+    }
+  } else {
+    for (int i = 0; i < 6; i++) {
+      int pixelIndex = NUM_PIXELS - pad * 6  - i;
+      pixels.setPixelColor(pixelIndex, color);
+    }
+  }*/
+  for (int i = 0; i < 6; i++) {
+      int pixelIndex = NUM_PIXELS - (pad * 6)  - i;
+      pixels.setPixelColor(pixelIndex, color);
+    }
+    pixels.show();
+}
+
+void setPadColorOn(int pad) {
+  setPadColor(pad, activatedColors[pad]);
+}
+
+void setPadColorOff(int pad) {
+  setPadColor(pad, deactivatedColors[pad]);
+}
+
+void updateColors() {
+  byte modalityOffset = (modality % 5) * 50;
+  for (int i = 0; i < NUMBER_OF_PADS; i++) {
+    byte c = modalityOffset + (i * 4);
+    activatedColors[i] = getColorWheel(c, 255);
+    deactivatedColors[i] = getColorWheel(c, 30);
+    setPadColor(i, deactivatedColors[i]);
+  }
+
+  pixels.show();
+}
+
 void increaseModality() {
   modality = constrain(modality + 1, 0, NUMBER_OF_MODALITIES);
   updateDisplay();
+  updateColors();
   print("Increase Modality");
   printState();
 }
@@ -94,6 +171,7 @@ void increaseModality() {
 void decreaseModality() {
   modality = constrain(modality - 1, 0, NUMBER_OF_MODALITIES);
   updateDisplay();
+  updateColors();
   print("Decrease Modality");
   printState();
 }
@@ -174,6 +252,10 @@ byte noteForPad(int pad) {
   int note = ((octave + 1) * 12) + padOffset + intonation;
   int constrainedNote = constrain(note, 21, 108);
   return (byte)constrainedNote;
+}
+
+Note noteSymbolForNote(byte note) {
+  return Note(note % 12);
 }
 
 // First parameter is the event type (0x09 = note on, 0x08 = note off).
@@ -332,7 +414,8 @@ void setup()
   // Is in Pin 13 that is already used
   // pinMode(LED_BUILTIN, OUTPUT);
   // digitalWrite(LED_BUILTIN, LOW);
-  
+  pinMode(PIXEL_PIN, OUTPUT);
+  /*
   for (int i = 0; i < NUMBER_OF_PADS; i++)
   {
     pads[i].attach(i + START_PIN, INPUT_PULLUP);
@@ -345,9 +428,16 @@ void setup()
     octaveForModality[i] = DEFAULT_OCTAVE;
   }
 
-  Serial.begin(9600);
-
-  delay(1000);
+  Serial.begin(9600);*/
+  pixels.begin();
+  delay(2000);
+  setAllPixelsColor(pixels.Color(30, 30, 30));
+}
+void loop()
+{
+}
+  /*delay(1000);
+  updateColors();
   printState();
   display.setBrightness(0x0a);
   updateDisplay();
@@ -355,6 +445,7 @@ void setup()
 
 void loop()
 {
+  
   increaseModalityButton.update();
   decreaseModalityButton.update();
   increaseOctaveButton.update();
@@ -376,6 +467,8 @@ void loop()
     if (pads[i].fell())
     {
       noteOn(i);
+      //setPadColorOn(i);
+      //pixels.show();
       if (SERIAL_ENABLED) {
         Serial.write(getNoteOnSerialByte(i));
       }
@@ -384,6 +477,8 @@ void loop()
     if (pads[i].rose())
     {
       noteOff(i);
+      //setPadColorOff(i);
+      //pixels.show();
       if (SERIAL_ENABLED) {
         Serial.write(getNoteOffSerialByte(i));
       }
@@ -391,7 +486,7 @@ void loop()
   }
   MidiUSB.flush();
 }
-
+*/
 void print(String s) {
   if (DEBUG) {
     Serial.print(s);
