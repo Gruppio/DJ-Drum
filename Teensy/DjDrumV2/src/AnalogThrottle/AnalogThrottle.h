@@ -17,6 +17,7 @@ public:
     void interval(uint16_t interval_millis);
     bool update();
     bool fell();
+    int intensity();
     bool rose();
     bool changed();
     bool read();
@@ -26,10 +27,11 @@ protected:
     unsigned long previousDuration;
     bool isRisen;
     bool isFallen;
+    int maxPeak;
     int threshold;
     uint16_t debounceTimeMillis;
     unsigned long lastChangedTime;
-    uint8_t previousPressedState;
+    uint8_t previousAboveThresholdState;
     uint8_t pin;
 };
 

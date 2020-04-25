@@ -12,8 +12,8 @@
 // Drum Parameters are: pin, note number (See GM DRUM SOUNDS below)
 //MIDIdrum myDrum(drumPin, 38);
 
-#define DEBOUNCE_TIME 35
-#define PAD_ACTIVATION_THRESHOLD 300
+#define DEBOUNCE_TIME 10
+#define PAD_ACTIVATION_THRESHOLD 200
 
 AnalogThrottle pads[NUM_PADS];
 Core core;
@@ -38,6 +38,10 @@ void setupSerial()
   Serial.begin(9600);
 }
 
+int computeMidiVelocityFromIntensity(int intensity) {
+  return map(intensity, 0, 1024, 20, 127);
+}
+
 void setup()
 {
   setupPads();
@@ -47,11 +51,6 @@ void setup()
 
 void loop()
 {
-  //usbMIDI.sendNoteOn(60, 99, 1);
-  // myDrum.send();
-
-  // while (usbMIDI.read()) {
-  // }
 
   for (int i = 0; i < NUM_PADS; i++)
   {
@@ -59,14 +58,21 @@ void loop()
 
     if (pads[i].fell())
     {
-      core.padPressed(i);
+      int intensity = pads[i].intensity();
+      int velocity = computeMidiVelocityFromIntensity(intensity);
+      core.padPressed(i, velocity);
+      Serial.println(velocity);
     }
 
     if (pads[i].rose())
     {
       core.padReleased(i);
+      Serial.println("Release");
     }
   }
-  //MidiUSB.flush();
+
+  while (usbMIDI.read()) {
+  }
+
   core.updateDisplay();
 }

@@ -5,7 +5,7 @@ AnalogThrottle::AnalogThrottle() : previousDuration(0),
                                    isFallen(false),
                                    debounceTimeMillis(50),
                                    lastChangedTime(0),
-                                   previousPressedState(0),
+                                   previousAboveThresholdState(0),
                                    pin(0) {}
 
 AnalogThrottle::AnalogThrottle(int pin) : previousDuration(0),
@@ -13,7 +13,7 @@ AnalogThrottle::AnalogThrottle(int pin) : previousDuration(0),
                                           isFallen(false),
                                           debounceTimeMillis(50),
                                           lastChangedTime(0),
-                                          previousPressedState(0),
+                                          previousAboveThresholdState(0),
                                           pin(pin)
 {
     attach(pin);
@@ -24,7 +24,7 @@ AnalogThrottle::AnalogThrottle(int pin, uint16_t interval_millis) : previousDura
                                                                     isFallen(false),
                                                                     debounceTimeMillis(50),
                                                                     lastChangedTime(0),
-                                                                    previousPressedState(0),
+                                                                    previousAboveThresholdState(0),
                                                                     pin(pin)
 {
     attach(pin);
@@ -36,7 +36,7 @@ AnalogThrottle::AnalogThrottle(int pin, uint16_t interval_millis, int threshold)
                                                                                    isFallen(false),
                                                                                    debounceTimeMillis(50),
                                                                                    lastChangedTime(0),
-                                                                                   previousPressedState(0),
+                                                                                   previousAboveThresholdState(0),
                                                                                    pin(pin)
 {
     attach(pin);
@@ -47,7 +47,7 @@ AnalogThrottle::AnalogThrottle(int pin, uint16_t interval_millis, int threshold)
 void AnalogThrottle::attach(int pin)
 {
     this->pin = pin;
-    previousPressedState = 0;
+    previousAboveThresholdState = 0;
     pinMode(pin, INPUT);
 }
 
@@ -71,6 +71,15 @@ bool AnalogThrottle::rose()
     return isRisen;
 }
 
+int AnalogThrottle::intensity()
+{
+    return maxPeak;
+    // if (fell()) {
+    //     return maxPeak;
+    // }
+    // return 0;
+}
+
 bool AnalogThrottle::changed()
 {
     return fell() || rose();
@@ -78,7 +87,7 @@ bool AnalogThrottle::changed()
 
 bool AnalogThrottle::read()
 {
-    return previousPressedState;
+    return previousAboveThresholdState;
 }
 
 unsigned long AnalogThrottle::duration()
@@ -93,24 +102,45 @@ bool AnalogThrottle::update()
     unsigned long currentTime = millis();
     if (currentTime - lastChangedTime > debounceTimeMillis)
     {
-        bool isPressedState = analogRead(pin) >= threshold;
+        int readValue = analogRead(pin);
+        bool isAboveThreshold = readValue >= threshold;
 
-        if (isPressedState == previousPressedState)
+        if (previousAboveThresholdState)
+            maxPeak = 0;
+
+        if (isAboveThreshold == previousAboveThresholdState)
             return false;
-
-        if (isPressedState)
+            
+        // Is Searching Peak
+        if (isAboveThreshold && (readValue > maxPeak))
         {
+            // Serial.print("New Max:");
+            // Serial.println(readValue);
+            maxPeak = readValue;
+            return false;
+        }
+
+        if (readValue < (maxPeak - 10) && (maxPeak > threshold))
+        {
+            // Serial.print("Fallen:");
+            // Serial.println(readValue);
             isFallen = true;
-        }
-        else
-        {
-            isRisen = true;
+            previousAboveThresholdState = true;
+            previousDuration = currentTime - lastChangedTime;
+            lastChangedTime = currentTime;
+            return true;
         }
 
-        previousDuration = currentTime - lastChangedTime;
-        lastChangedTime = currentTime;
-        previousPressedState = isPressedState;
-        return true;
+        if (!isAboveThreshold) {
+            // Serial.print("Rised:");
+            // Serial.println(readValue);
+            isRisen = true;
+            maxPeak = 0;
+            previousAboveThresholdState = false;
+            previousDuration = currentTime - lastChangedTime;
+            lastChangedTime = currentTime;
+            return true;
+        }
     }
     return false;
 }

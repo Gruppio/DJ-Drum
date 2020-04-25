@@ -8,7 +8,7 @@
 class Core {
 public:
     Core();
-    void padPressed(int pad);
+    void padPressed(int pad, int velocity);
     void padReleased(int pad);
     void updateDisplay();
     
