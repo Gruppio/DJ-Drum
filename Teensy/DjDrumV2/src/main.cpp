@@ -12,8 +12,8 @@
 // Drum Parameters are: pin, note number (See GM DRUM SOUNDS below)
 //MIDIdrum myDrum(drumPin, 38);
 
-#define DEBOUNCE_TIME 25
-#define PAD_ACTIVATION_THRESHOLD 80
+#define DEBOUNCE_TIME 35
+#define PAD_ACTIVATION_THRESHOLD 300
 
 AnalogThrottle pads[NUM_PADS];
 Core core;

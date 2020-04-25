@@ -9,6 +9,7 @@ void led(bool value) {
 
 void Core::padPressed(int pad) {
     numberOfPadsCurrentlyPressed++;
+    usbMIDI.sendNoteOn(60, 99, 1);
 }
 
 void Core::padReleased(int pad) {

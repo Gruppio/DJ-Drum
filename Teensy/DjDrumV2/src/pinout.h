@@ -25,28 +25,33 @@
 #define PIN_PAD20 A13
 #define PIN_PAD21 A15
 
-#define NUM_PADS 18
+#define NUM_PADS 1
+
+// uint8_t pinPads[] = {
+//     PIN_PAD1,
+//     PIN_PAD2,
+//     PIN_PAD3,
+//     PIN_PAD4,
+//     PIN_PAD5,
+//     PIN_PAD6,
+//     PIN_PAD7,
+//     PIN_PAD8,
+//     PIN_PAD9,
+//     PIN_PAD10,
+//     PIN_PAD11,
+//     PIN_PAD12,
+//     PIN_PAD13,
+//     PIN_PAD14,
+//     PIN_PAD15,
+//     PIN_PAD16,
+//     PIN_PAD17,
+//     PIN_PAD18
+// };
 
 uint8_t pinPads[] = {
-    PIN_PAD1,
-    PIN_PAD2,
-    PIN_PAD3,
-    PIN_PAD4,
-    PIN_PAD5,
-    PIN_PAD6,
-    PIN_PAD7,
-    PIN_PAD8,
-    PIN_PAD9,
-    PIN_PAD10,
-    PIN_PAD11,
-    PIN_PAD12,
-    PIN_PAD13,
-    PIN_PAD14,
-    PIN_PAD15,
-    PIN_PAD16,
-    PIN_PAD17,
     PIN_PAD18
 };
+
 
 
 // CONTROL BUTTONS

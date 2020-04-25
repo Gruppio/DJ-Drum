@@ -5,7 +5,8 @@
 #include "Arduino.h"
 #endif
 
-class AnalogThrottle {
+class AnalogThrottle
+{
 public:
     AnalogThrottle();
     AnalogThrottle(int pin);
