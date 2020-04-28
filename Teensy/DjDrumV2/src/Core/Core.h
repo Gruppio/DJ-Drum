@@ -4,24 +4,20 @@
 #include <Arduino.h>
 #include <TM1637Display.h>
 #include <Adafruit_NeoPixel.h>
+#include "Midi/Midi.h"
 
 class Core {
 public:
     Core();
-    void padPressed(int pad, int velocity);
-    void padReleased(int pad);
+    void padPressed(int pad, uint8_t velocity);
+    void update();
     void updateDisplay();
     
 protected:
-    uint8_t numberOfPadsCurrentlyPressed;
-    // unsigned long previousDuration;
-    // bool isRisen;
-    // bool isFallen;
-    // int threshold;
-    // uint16_t debounceTimeMillis;
-    // unsigned long lastChangedTime;
-    // uint8_t previousPressedState;
-    // uint8_t pin;
+    Midi midi;
+
+    uint8_t midiChannel = 1;
+    int noteDuration = 1000;
 };
 
 #endif

@@ -15,8 +15,8 @@
 #define DEBOUNCE_TIME 10
 #define PAD_ACTIVATION_THRESHOLD 200
 
-AnalogThrottle pads[NUM_PADS];
 Core core;
+AnalogThrottle pads[NUM_PADS];
 
 void setupPads()
 {
@@ -38,8 +38,8 @@ void setupSerial()
   Serial.begin(9600);
 }
 
-int computeMidiVelocityFromIntensity(int intensity) {
-  return map(intensity, 0, 1024, 20, 127);
+uint8_t computeMidiVelocityFromIntensity(int intensity) {
+  return (uint8_t)map(intensity, 0, 1024, 20, 127);
 }
 
 void setup()
@@ -49,9 +49,9 @@ void setup()
   setupSerial();
 }
 
+
 void loop()
 {
-
   for (int i = 0; i < NUM_PADS; i++)
   {
     pads[i].update();
@@ -61,18 +61,9 @@ void loop()
       int intensity = pads[i].intensity();
       int velocity = computeMidiVelocityFromIntensity(intensity);
       core.padPressed(i, velocity);
-      Serial.println(velocity);
-    }
-
-    if (pads[i].rose())
-    {
-      core.padReleased(i);
-      Serial.println("Release");
     }
   }
 
-  while (usbMIDI.read()) {
-  }
-
+  core.update();
   core.updateDisplay();
 }
