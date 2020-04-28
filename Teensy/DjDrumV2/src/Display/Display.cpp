@@ -26,7 +26,7 @@ void Display::clear() {
 
 void Display::write(const char *text) {
     clear();
-    size_t lenght = min(4, strlen(text));
+    int lenght = min(4, (int)strlen(text));
     for (int i = 0; i < lenght; i++) {
         digits[i] = digitFor(text[i]);
     }
@@ -35,7 +35,7 @@ void Display::write(const char *text) {
 
 void Display::write(char *text) {
     clear();
-    size_t lenght = min(4, strlen(text));
+    int lenght = min(4, (int)strlen(text));
     for (int i = 0; i < lenght; i++) {
         digits[i] = digitFor(text[i]);
     }
@@ -44,9 +44,22 @@ void Display::write(char *text) {
 
 void Display::writeTitleValue(const char title, uint8_t value) {
     clear();
-    digits[0] = title;
+    digits[0] = digitFor(title);
+    
+    uint8_t val100 = value / 100;
+    if (val100 > 0) {
+        digits[1] = digitFor(val100);
+    }
+    
+    uint8_t val10 = (value - (val100 * 100)) / 10;
+    if (val10 > 0) {
+        digits[2] = digitFor(val10);
+    }
 
-    //final[0] = '0' + x;
+    uint8_t val1 = value - (val100 * 100) - (val10 * 10);
+    if (val1 > 0) {
+        digits[3] = digitFor(val1);
+    }
 
     needsUpdate = true;
 }
@@ -61,7 +74,17 @@ void Display::writeTitleValue(const char title, uint8_t value) {
 //      D
 byte Display::digitFor(char character) {
     switch (character) {
-    //                 XGFEDCBA
+    //                XGFEDCBA
+    case  0: return 0b00111111;    // 0
+    case  1: return 0b00000110;    // 1
+    case  2: return 0b01011011;    // 2
+    case  3: return 0b01001111;    // 3
+    case  4: return 0b01100110;    // 4
+    case  5: return 0b01101101;    // 5
+    case  6: return 0b01111101;    // 6
+    case  7: return 0b00000111;    // 7
+    case  8: return 0b01111111;    // 8
+    case  9: return 0b01101111;    // 9
     case '0': return 0b00111111;    // 0
     case '1': return 0b00000110;    // 1
     case '2': return 0b01011011;    // 2

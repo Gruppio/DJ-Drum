@@ -14,7 +14,8 @@ public:
     void updateDisplay();
     
 protected:
-    Midi midi;
+    Midi *midi = new Midi();
+    Display *display = new Display();
 
     uint8_t midiChannel = 1;
     int noteDuration = 1000;

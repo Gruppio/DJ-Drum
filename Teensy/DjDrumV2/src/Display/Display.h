@@ -6,6 +6,7 @@
 #endif
 
 #include <TM1637Display.h>
+#include "pinout.h"
 
 class Display
 {
@@ -21,7 +22,7 @@ public:
 protected:
     bool needsUpdate = false;
     byte digits[4];
-    TM1637Display *display = new TM1637Display(SCL, SDA);
+    TM1637Display *display = new TM1637Display(PIN_SCL, PIN_SDA);
     byte digitFor(char character);
 };
 
