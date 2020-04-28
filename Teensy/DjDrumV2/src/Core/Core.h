@@ -2,9 +2,9 @@
 #define CORE_H
 
 #include <Arduino.h>
-#include <TM1637Display.h>
 #include <Adafruit_NeoPixel.h>
 #include "Midi/Midi.h"
+#include "Display/Display.h"
 
 class Core {
 public:
