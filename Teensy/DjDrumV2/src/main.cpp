@@ -1,16 +1,8 @@
 #include <Arduino.h>
-// #include <TM1637Display.h>
-// #include <Adafruit_NeoPixel.h>
-//#include "MIDIcontroller.h"
 #include "pinout.h"
 #include "AnalogThrottle/AnalogThrottle.h"
 #include "Core/Core.h"
 
-// byte MIDIchannel = 1;
-// const int drumPin = 23; // Change this to the correct ANALOG pin
-
-// Drum Parameters are: pin, note number (See GM DRUM SOUNDS below)
-//MIDIdrum myDrum(drumPin, 38);
 
 #define DEBOUNCE_TIME 10
 #define PAD_ACTIVATION_THRESHOLD 200
@@ -39,7 +31,7 @@ void setupSerial()
 }
 
 uint8_t computeMidiVelocityFromIntensity(int intensity) {
-  return (uint8_t)map(intensity, 0, 1024, 20, 127);
+  return (uint8_t)map(intensity, 0, 1024, 0, 127);
 }
 
 void setup()
