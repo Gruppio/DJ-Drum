@@ -47,8 +47,8 @@ public:
 protected:
     uint8_t channel = 0;
     uint8_t channelOctave[NUMBER_OF_MIDI_CHANNELS];
-    uint8_t channelScale[NUMBER_OF_MIDI_CHANNELS];
-    uint8_t channelIntonation[NUMBER_OF_MIDI_CHANNELS];
+    uint8_t channelScale[NUMBER_OF_MIDI_CHANNELS] = { 0 };
+    uint8_t channelIntonation[NUMBER_OF_MIDI_CHANNELS] = { 0 };
 
     int blackAndWhiteScale[18] = {1, 3, 6, 8, 10, 13,
                                 0, 2, 4, 5, 7, 9,

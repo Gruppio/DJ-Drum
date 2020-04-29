@@ -3,6 +3,10 @@
 
 NoteModulator::NoteModulator()
 {
+    for(int i = 0; i < NUMBER_OF_MIDI_CHANNELS; i++) 
+    {
+        channelOctave[i] = DEFAULT_OCTAVE;
+    }
 }
 
 uint8_t NoteModulator::noteForPad(int pad)
@@ -33,7 +37,7 @@ int* NoteModulator::padOffsets() {
 
 uint8_t NoteModulator::getChannel()
 {
-    return channel;
+    return channel + 1;
 }
 
 uint8_t NoteModulator::getOctave()
