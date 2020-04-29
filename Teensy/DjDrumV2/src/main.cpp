@@ -7,8 +7,6 @@
 #define DEBOUNCE_TIME 10
 #define PAD_ACTIVATION_THRESHOLD 200
 
-
-
 Core core;
 AnalogThrottle pads[NUM_PADS];
 
@@ -54,14 +52,9 @@ void setupI2C()
   pinMode(PIN_SCL, OUTPUT);
 }
 
-
 void setupSerial()
 {
   Serial.begin(9600);
-}
-
-uint8_t computeMidiVelocityFromIntensity(int intensity) {
-  return (uint8_t)map(intensity, 0, 1024, 0, 127);
 }
 
 void setup()
@@ -72,6 +65,14 @@ void setup()
   setupSerial();
 }
 
+uint8_t computeMidiVelocityFromIntensity(int intensity) {
+  return (uint8_t)map(intensity, 0, 1024, 0, 127);
+}
+
+int loopCount = 0;
+bool everyLoop(int n) {
+  return (loopCount % n) == 0;
+}
 
 void loop()
 {
@@ -88,5 +89,9 @@ void loop()
   }
 
   core.update();
-  core.updateDisplay();
+
+  if (everyLoop(10))
+    core.updateDisplay();
+
+  loopCount++;
 }

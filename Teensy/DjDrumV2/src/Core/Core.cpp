@@ -9,7 +9,6 @@ void Core::padPressed(int pad, uint8_t velocity) {
 
 void Core::update() {
     midi->update();
-    display->writeTitleValue('c', 27);
 }
 
 void Core::updateDisplay() {
