@@ -5,10 +5,6 @@
 #include "Arduino.h"
 #endif
 
-#include "NormalScale.h"
-#include "MajorScale.h"
-#include "BlackAndWhiteScale.h"
-
 #define NUMBER_OF_MIDI_CHANNELS 16
 
 #define DEFAULT_OCTAVE 3
@@ -16,7 +12,12 @@
 
 #define DEFAULT_SCALE 0
 #define NUMBER_OF_SCALES 3
-enum Scale { Normal = 0, Major, BlackAndWhite };
+enum Scale
+{
+    Normal = 0,
+    Major,
+    BlackAndWhite
+};
 
 #define NUMBER_OF_INTONATIONS 11
 
@@ -27,7 +28,7 @@ class NoteModulator
 public:
     NoteModulator();
     uint8_t noteForPad(int pad);
-    int* padOffsets();
+    int *padOffsets();
 
     uint8_t getChannel();
     uint8_t getOctave();
@@ -36,6 +37,8 @@ public:
 
     void incrChannel();
     void decrChannel();
+    void incrOctave();
+    void decrOctave();
     void incrScale();
     void decrScale();
     void incrIntonation();
@@ -46,6 +49,67 @@ protected:
     uint8_t channelOctave[NUMBER_OF_MIDI_CHANNELS];
     uint8_t channelScale[NUMBER_OF_MIDI_CHANNELS];
     uint8_t channelIntonation[NUMBER_OF_MIDI_CHANNELS];
+
+    int blackAndWhiteScale[18] = {1, 3, 6, 8, 10, 13,
+                                0, 2, 4, 5, 7, 9,
+                                11, 12, 14, 16, 17, 15};
+
+    int majorScale[18] = {-9, -7, -6, -4, -2, -1,
+                        0, 2, 4, 5, 7, 9,
+                        11, 12, 14, 16, 17, 19};
+
+    int normalScale[18] = {-6, -5, -4, -3, -2, -1,
+                         0, 1, 2, 3, 4, 5,
+                         6, 7, 8, 9, 10, 11};
 };
 
 #endif
+
+// Keyboard
+// Black Keys:    | 2 | 4 |   | 7 | 9 | 11 |     | 14 | 16 |
+// White Keys:  | 1 | 3 | 5 | 6 | 8 | 10 | 12 | 13 | 15 | 17 | 18 |
+
+// NORMAL
+// Pad Number
+// (Offset)
+
+//    1      2      3      4      5      6
+// ( -6 ) ( -5 ) ( -4 ) ( -3 ) ( -2 ) ( -1 )
+
+//   7     8     9    10     11    12
+// ( 0 ) ( 1 ) ( 2 ) ( 3 ) ( 4 ) ( 5 )
+
+//   13    14    15    16    17     18
+// ( 6 ) ( 7 ) ( 8 ) ( 9 ) ( 10 ) ( 11 )
+
+// ------------
+
+// MAJOR
+
+// Pad Number
+// (Offset)
+
+//    1      2      3      4      5      6
+// ( -9 ) ( -7 ) ( -6 ) ( -4 ) ( -2 ) ( -1 )
+
+//   7     8     9    10     11    12
+// ( 0 ) ( 2 ) ( 4 ) ( 5 ) ( 7 ) ( 9 )
+
+//   13    14    15    16    17    18
+// ( 11 )( 12 )( 14 )( 16 )( 17 )( 19 )
+
+// ---------------
+
+// Black and white
+
+// Pad Number
+// (Offset)
+
+//   1     2     3     4     5     6
+// ( 2 ) ( 4 ) ( 7 ) ( 9 ) ( 11 )( 14 )
+
+//   7     8     9    10     11    12
+// ( 1 ) ( 3 ) ( 5 ) ( 6 ) ( 8 ) ( 10 )
+
+//   13    14    15    16    17    18
+// ( 12 )( 13 )( 15 )( 17 )( 18 )( 16 )

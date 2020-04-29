@@ -64,6 +64,24 @@ void Display::writeTitleValue(const char title, uint8_t value) {
     needsUpdate = true;
 }
 
+void Display::writeTitle2Value(const char title, const char title2, uint8_t value) {
+    clear();
+    digits[0] = digitFor(title);
+    digits[1] = digitFor(title2);
+    
+    uint8_t val10 = value / 10;
+    if (val10 > 0) {
+        digits[2] = digitFor(val10);
+    }
+
+    uint8_t val1 = value - (val10 * 10);
+    if (val1 > 0) {
+        digits[3] = digitFor(val1);
+    }
+
+    needsUpdate = true;
+}
+
 //
 //      A
 //     ---

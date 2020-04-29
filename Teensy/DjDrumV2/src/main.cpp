@@ -2,13 +2,19 @@
 #include "pinout.h"
 #include "AnalogThrottle/AnalogThrottle.h"
 #include "Core/Core.h"
-
+#include "Throttle.h"
 
 #define DEBOUNCE_TIME 10
 #define PAD_ACTIVATION_THRESHOLD 200
 
 Core core;
 AnalogThrottle pads[NUM_PADS];
+Throttle decrScaleButton(PIN_BUTTON1, INPUT_PULLUP, 100);
+Throttle incrScaleButton(PIN_BUTTON2, INPUT_PULLUP, 100);
+Throttle decrOctaveButton(PIN_BUTTON3, INPUT_PULLUP, 100);
+Throttle incrOctaveButton(PIN_BUTTON4, INPUT_PULLUP, 100);
+Throttle decrIntonationButton(PIN_BUTTON5, INPUT_PULLUP, 100);
+Throttle incrIntonationButton(PIN_BUTTON6, INPUT_PULLUP, 100);
 
 uint8_t pinPads[] = {
     PIN_PAD1,
@@ -76,6 +82,7 @@ bool everyLoop(int n) {
 
 void loop()
 {
+  // Update Pads
   for (int i = 0; i < NUM_PADS; i++)
   {
     pads[i].update();
@@ -87,6 +94,21 @@ void loop()
       core.padPressed(i, velocity);
     }
   }
+
+  // Update Buttons
+  decrScaleButton.update();
+  incrScaleButton.update();
+  decrOctaveButton.update();
+  incrOctaveButton.update();
+  decrIntonationButton.update();
+  incrIntonationButton.update();
+
+  if(decrScaleButton.fell()) { core.decrScale(); };
+  if(incrScaleButton.fell()) { core.incrScale(); };
+  if(decrOctaveButton.fell()) { core.decrOctave(); };
+  if(incrOctaveButton.fell()) { core.incrOctave(); };
+  if(decrIntonationButton.fell()) { core.decrIntonation(); };
+  if(incrIntonationButton.fell()) { core.incrOctave(); };
 
   core.update();
 

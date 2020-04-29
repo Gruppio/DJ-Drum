@@ -18,6 +18,7 @@ public:
     void write(const char *text);
     void write(char *text);
     void writeTitleValue(const char title, uint8_t value);
+    void writeTitle2Value(const char title, const char title2, uint8_t value);
 
 protected:
     bool needsUpdate = false;

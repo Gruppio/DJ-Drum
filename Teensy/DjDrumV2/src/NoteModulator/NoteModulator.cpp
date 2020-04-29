@@ -61,6 +61,16 @@ void NoteModulator::decrChannel()
     channel = constrain(channel - 1, 0, NUMBER_OF_MIDI_CHANNELS);
 }
 
+void NoteModulator::incrOctave()
+{
+    channelOctave[channel] = constrain(channelOctave[channel] + 1, 0, NUMBER_OF_OCTAVES);
+}
+
+void NoteModulator::decrOctave()
+{
+    channelOctave[channel] = constrain(channelOctave[channel] + 1, 0, NUMBER_OF_OCTAVES);
+}
+
 void NoteModulator::incrScale()
 {
     channelScale[channel] = constrain(channelScale[channel] + 1, 0, NUMBER_OF_SCALES);
