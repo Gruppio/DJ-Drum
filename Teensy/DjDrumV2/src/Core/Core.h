@@ -7,6 +7,7 @@
 #include "Display/Display.h"
 #include "NoteModulator/NoteModulator.h"
 #include "Models/NoteSymbol.h"
+#include "MidiRecorder/MidiRecorder.h"
 #include "PadLeds/PadLeds.h"
 
 class Core {
@@ -24,15 +25,18 @@ public:
     void decrScale();
     void incrIntonation();
     void decrIntonation();
+    void didPressRecording();
+    void didReleaseRecording();
 
 public:
+    int noteDuration = 400;
     Display *display = new Display();
     NoteModulator *noteModulator = new NoteModulator();
+    MidiRecorder *midiRecorder = new MidiRecorder();
 
 protected:
-    Midi *midi = new Midi();
+    Midi *midi = new Midi(midiRecorder);
     //PadLeds *padLeds = new PadLeds();
-    int noteDuration = 1000;
     void displayWriteScale();
     void displayWriteNote(byte note);
     NoteSymbol noteSymbolForNote(byte note);

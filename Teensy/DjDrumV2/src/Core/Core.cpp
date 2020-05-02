@@ -21,6 +21,7 @@ void Core::padPressed(int pad, uint8_t velocity)
 
 void Core::update()
 {
+    midiRecorder->update();
     midi->update();
 }
 
@@ -76,6 +77,16 @@ void Core::decrIntonation()
 {
     noteModulator->decrIntonation();
     displayWriteNote(noteModulator->getIntonation());
+}
+
+void Core::didPressRecording() 
+{
+    midiRecorder->didPressRecording();
+}
+
+void Core::didReleaseRecording() 
+{
+    midiRecorder->didReleaseRecording();
 }
 
 void Core::displayWriteScale() 

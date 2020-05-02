@@ -1,13 +1,15 @@
 
 #include "Midi.h"
 
-Midi::Midi()
+Midi::Midi(MidiRecorder *midiRecorder)
 {
+    this->midiRecorder = midiRecorder;
 }
 
 void Midi::sendNoteOn(uint8_t note, uint8_t velocity, uint8_t channel)
 {
     usbMIDI.sendNoteOn(note, velocity, channel);
+    midiRecorder->recordNote(true, note, velocity, channel);
     _numberOfNotesCurrenltyPlaying++;
     if (DEBUG)
     {
@@ -23,6 +25,7 @@ void Midi::sendNoteOn(uint8_t note, uint8_t velocity, uint8_t channel)
 void Midi::sendNoteOff(uint8_t note, uint8_t velocity, uint8_t channel)
 {
     usbMIDI.sendNoteOff(note, velocity, channel);
+    midiRecorder->recordNote(false, note, velocity, channel);
     _numberOfNotesCurrenltyPlaying--;
     if (DEBUG)
     {

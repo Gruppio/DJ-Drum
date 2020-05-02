@@ -8,12 +8,15 @@
 #define PAD_ACTIVATION_THRESHOLD 400 //200
 Core core;
 AnalogThrottle pads[NUM_PADS];
-Throttle decrScaleButton(PIN_BUTTON1, INPUT_PULLUP, 100);
-Throttle incrScaleButton(PIN_BUTTON2, INPUT_PULLUP, 100);
-Throttle decrOctaveButton(PIN_BUTTON3, INPUT_PULLUP, 100);
-Throttle incrOctaveButton(PIN_BUTTON4, INPUT_PULLUP, 100);
-Throttle decrIntonationButton(PIN_BUTTON5, INPUT_PULLUP, 100);
-Throttle incrIntonationButton(PIN_BUTTON6, INPUT_PULLUP, 100);
+Throttle decrScaleButton(PIN_BUTTON6, INPUT_PULLUP, 100);
+Throttle incrScaleButton(PIN_BUTTON5, INPUT_PULLUP, 100);
+Throttle decrOctaveButton(PIN_BUTTON4, INPUT_PULLUP, 100);
+Throttle incrOctaveButton(PIN_BUTTON3, INPUT_PULLUP, 100);
+Throttle decrIntonationButton(PIN_BUTTON2, INPUT_PULLUP, 100);
+Throttle incrIntonationButton(PIN_BUTTON1, INPUT_PULLUP, 100);
+Throttle decrChannelButton(PIN_FOOTSWITCH1, INPUT_PULLUP, 100);
+Throttle incrChannelButton(PIN_FOOTSWITCH2, INPUT_PULLUP, 100);
+Throttle recordingButton(PIN_FOOTSWITCH4, INPUT_PULLUP, 100);
 
 uint8_t pinPads[] = {
     PIN_PAD1,
@@ -107,6 +110,9 @@ void loop()
   incrOctaveButton.update();
   decrIntonationButton.update();
   incrIntonationButton.update();
+  decrChannelButton.update();
+  incrChannelButton.update();
+  recordingButton.update();
 
   if(decrScaleButton.fell()) { core.decrScale(); };
   if(incrScaleButton.fell()) { core.incrScale(); };
@@ -114,6 +120,10 @@ void loop()
   if(incrOctaveButton.fell()) { core.incrOctave(); };
   if(decrIntonationButton.fell()) { core.decrIntonation(); };
   if(incrIntonationButton.fell()) { core.incrIntonation(); };
+  if(decrChannelButton.fell()) { core.decrChannel(); };
+  if(incrChannelButton.fell()) { core.incrChannel(); };
+  if(recordingButton.fell()) { core.didPressRecording(); };
+  if(recordingButton.rose()) { core.didReleaseRecording(); };
 
   core.update();
 

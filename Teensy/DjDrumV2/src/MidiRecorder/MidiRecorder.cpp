@@ -5,8 +5,14 @@ MidiRecorder::MidiRecorder()
 {
 }
 
-void MidiRecorder::pressedRecording()
+void MidiRecorder::didPressRecording()
 {
+    if (DEBUG)
+    {
+        Serial.println(state);
+        Serial.println("Did Press Recording");
+    }
+
     switch (state)
     {
     case Idle:
@@ -31,8 +37,13 @@ void MidiRecorder::pressedRecording()
     }
 }
 
-void MidiRecorder::releasedRecording()
+void MidiRecorder::didReleaseRecording()
 {
+    if (DEBUG)
+    {
+        Serial.println(state);
+        Serial.println("Did Release Recording");
+    }
     switch (state)
     {
     case Idle:
@@ -51,7 +62,7 @@ void MidiRecorder::releasedRecording()
 
     case Playing:
         break;
-    
+
     default:
         break;
     }
@@ -59,26 +70,40 @@ void MidiRecorder::releasedRecording()
 
 void MidiRecorder::recordNote(bool isOn, uint8_t note, uint8_t velocity, uint8_t channel)
 {
+    if (DEBUG)
+    {
+        Serial.println(state);
+        Serial.println("Record Note");
+    }
     switch (state)
     {
     case Idle:
         break;
 
     case WaitStartRecording:
+    {
         startRecording();
         MidiNoteRecord *noteRecord = new MidiNoteRecord(isOn, note, velocity, channel, millis() - startRecordingTimestamp);
         recordedMidiNotes.push_back(noteRecord);
         break;
+    }
 
-    case Recording: 
-        MidiNoteRecord *noteRecord2 = new MidiNoteRecord(isOn, note, velocity, channel, millis() - startRecordingTimestamp);
-        recordedMidiNotes.push_back(noteRecord2);
+    case Recording:
+    {
+        MidiNoteRecord *noteRecord = new MidiNoteRecord(isOn, note, velocity, channel, millis() - startRecordingTimestamp);
+        recordedMidiNotes.push_back(noteRecord);
+        Serial.print(isOn);
+        Serial.print(" ");
+        Serial.println(millis() - startRecordingTimestamp);
         break;
+    }
 
     case WaitEndRecording:
+    {
         completeRecording();
         startPlaying();
         break;
+    }
 
     case Playing:
         break;
@@ -90,27 +115,35 @@ void MidiRecorder::recordNote(bool isOn, uint8_t note, uint8_t velocity, uint8_t
 
 void MidiRecorder::update()
 {
-    if (state != Playing)
+    if (state != Playing || hasRecording == false)
         return;
 
     unsigned long currentTimestamp = millis() - startPlayingTimestamp;
     if (currentTimestamp >= recordingDuration)
+    {
         startPlaying();
+        currentTimestamp = 0;
+    }
 
-    if(recordedMidiNotesIterator != recordedMidiNotes.end()) {
+    if (recordedMidiNotesIterator != recordedMidiNotes.end())
+    {
         MidiNoteRecord *midiNoteRecord = *recordedMidiNotesIterator;
-        if(oldUpdateTimestamp < midiNoteRecord->timestamp && currentTimestamp >= midiNoteRecord->timestamp) {
-            if(midiNoteRecord->isOn) {
+        // Serial.println(midiNoteRecord->timestamp);
+        // Serial.println(oldUpdateTimestamp < midiNoteRecord->timestamp);
+        // Serial.println(currentTimestamp >= midiNoteRecord->timestamp);
+        if (currentTimestamp >= midiNoteRecord->timestamp)
+        {
+            if (midiNoteRecord->isOn == true)
+            {
                 usbMIDI.sendNoteOn(midiNoteRecord->note, midiNoteRecord->velocity, midiNoteRecord->channel);
-            } else {
+            }
+            else
+            {
                 usbMIDI.sendNoteOff(midiNoteRecord->note, midiNoteRecord->velocity, midiNoteRecord->channel);
             }
             recordedMidiNotesIterator++;
         }
     }
-        
-    
-    oldUpdateTimestamp = currentTimestamp;
 }
 
 void MidiRecorder::deleteRecording()
@@ -141,7 +174,7 @@ void MidiRecorder::completeRecording()
 void MidiRecorder::startPlaying()
 {
     if (!hasRecording)
-            return;
+        return;
     recordedMidiNotesIterator = recordedMidiNotes.begin();
     startPlayingTimestamp = millis();
     state = Playing;
