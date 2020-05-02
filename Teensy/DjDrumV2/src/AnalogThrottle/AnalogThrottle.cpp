@@ -120,7 +120,7 @@ bool AnalogThrottle::update()
             return false;
         }
 
-        if (readValue < (maxPeak - 10) && (maxPeak > threshold))
+        if (readValue < (maxPeak - 20) && (maxPeak > threshold))
         {
             // Serial.print("Fallen:");
             // Serial.println(readValue);

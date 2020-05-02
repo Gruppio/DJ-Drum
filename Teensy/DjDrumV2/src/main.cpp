@@ -5,7 +5,7 @@
 #include "Throttle.h"
 
 #define DEBOUNCE_TIME 50
-#define PAD_ACTIVATION_THRESHOLD 400 //200
+#define PAD_ACTIVATION_THRESHOLD 350 //200
 Core core;
 AnalogThrottle pads[NUM_PADS];
 Throttle decrScaleButton(PIN_BUTTON6, INPUT_PULLUP, 100);
@@ -49,6 +49,11 @@ void setupPads()
   }
 }
 
+void setupPotentiometers()
+{
+  pinMode(PIN_VOLUME_POTENTIOMETER, INPUT);
+}
+
 void setupInternalLed()
 {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -73,10 +78,20 @@ void setupSerial()
 void setup()
 {
   setupPads();
+  setupPotentiometers();
   setupInternalLed();
   setupPadLeds();
   setupI2C();
   setupSerial();
+}
+
+int oldNoteDuration = 0;
+void updateNoteDuration() {
+  int noteDuration = map(analogRead(PIN_VOLUME_POTENTIOMETER), 0, 1024, 80, 2000);
+  if (abs(noteDuration - oldNoteDuration) > 20) {
+    core.setNoteDuration(noteDuration);
+    oldNoteDuration = noteDuration;
+  }
 }
 
 uint8_t computeMidiVelocityFromIntensity(int intensity) {
@@ -124,6 +139,9 @@ void loop()
   if(incrChannelButton.fell()) { core.incrChannel(); };
   if(recordingButton.fell()) { core.didPressRecording(); };
   if(recordingButton.rose()) { core.didReleaseRecording(); };
+
+  if (everyLoop(50))
+    updateNoteDuration();
 
   core.update();
 

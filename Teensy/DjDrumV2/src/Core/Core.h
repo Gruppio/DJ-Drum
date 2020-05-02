@@ -27,14 +27,16 @@ public:
     void decrIntonation();
     void didPressRecording();
     void didReleaseRecording();
+    void setNoteDuration(int duration);
 
 public:
-    int noteDuration = 400;
+    
     Display *display = new Display();
     NoteModulator *noteModulator = new NoteModulator();
     MidiRecorder *midiRecorder = new MidiRecorder();
 
 protected:
+    int noteDuration = 400;
     Midi *midi = new Midi(midiRecorder);
     //PadLeds *padLeds = new PadLeds();
     void displayWriteScale();

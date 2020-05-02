@@ -89,6 +89,12 @@ void Core::didReleaseRecording()
     midiRecorder->didReleaseRecording();
 }
 
+void Core::setNoteDuration(int duration)
+{
+    noteDuration = duration;
+    display->writeValue(duration);
+}
+
 void Core::displayWriteScale() 
 {
     Scale scale = noteModulator->getScale();

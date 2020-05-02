@@ -82,8 +82,12 @@ void MidiRecorder::recordNote(bool isOn, uint8_t note, uint8_t velocity, uint8_t
 
     case WaitStartRecording:
     {
-        startRecording();
-        addToRecordedMidiNotes(isOn, note, velocity, channel);
+        // We want to start recording only if the DJ press a pad
+        if (isOn)
+        {
+            startRecording();
+            addToRecordedMidiNotes(isOn, note, velocity, channel);
+        }
         break;
     }
 
