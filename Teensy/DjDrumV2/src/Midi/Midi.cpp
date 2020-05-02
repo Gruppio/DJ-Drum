@@ -1,14 +1,6 @@
 
 #include "Midi.h"
 
-MidiNoteOffRecord::MidiNoteOffRecord(uint8_t note, uint8_t velocity, uint8_t channel, int duration)
-{
-    this->note = note;
-    this->velocity = velocity;
-    this->channel = channel;
-    this->scheduledTime = millis() + duration;
-}
-
 Midi::Midi()
 {
 }
@@ -46,7 +38,7 @@ void Midi::sendNoteOff(uint8_t note, uint8_t velocity, uint8_t channel)
 void Midi::sendNote(uint8_t note, uint8_t velocity, uint8_t channel, int duration)
 {
     sendNoteOn(note, velocity, channel);
-    MidiNoteOffRecord *midiNoteOffRecord = new MidiNoteOffRecord(note, velocity, channel, duration);
+    MidiNoteRecord *midiNoteOffRecord = new MidiNoteRecord(false, note, velocity, channel, millis() + (unsigned long) duration);
     scheduledMidiNoteOff.push_back(midiNoteOffRecord);
 }
 
@@ -59,8 +51,8 @@ void Midi::update()
     if (scheduledMidiNoteOff.empty())
         return;
 
-    MidiNoteOffRecord *noteRecord = scheduledMidiNoteOff.front();
-    if (noteRecord->scheduledTime <= millis())
+    MidiNoteRecord *noteRecord = scheduledMidiNoteOff.front();
+    if (noteRecord->timestamp <= millis())
     {
         sendNoteOff(noteRecord->note, noteRecord->velocity, noteRecord->channel);
         scheduledMidiNoteOff.pop_front();

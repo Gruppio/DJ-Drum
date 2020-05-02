@@ -6,17 +6,9 @@
 #endif
 
 #include <list>
+#include "Models/MidiNoteRecord.h"
 
 #define DEBUG false
-
-struct MidiNoteOffRecord
-{
-    MidiNoteOffRecord(uint8_t note, uint8_t velocity, uint8_t channel, int duration);
-    uint8_t note;
-    uint8_t velocity;
-    uint8_t channel;
-    unsigned long scheduledTime;
-};
 
 class Midi
 {
@@ -28,7 +20,7 @@ public:
 
 protected:
     int _numberOfNotesCurrenltyPlaying = 0;
-    std::list<MidiNoteOffRecord *> scheduledMidiNoteOff;
+    std::list<MidiNoteRecord *> scheduledMidiNoteOff;
 
     void sendNoteOn(uint8_t note, uint8_t velocity, uint8_t channel);
     void sendNoteOff(uint8_t note, uint8_t velocity, uint8_t channel);
