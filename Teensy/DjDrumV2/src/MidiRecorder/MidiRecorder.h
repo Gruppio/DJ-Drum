@@ -30,6 +30,7 @@ protected:
     std::list<MidiNoteRecord *>::iterator recordedMidiNotesIterator;
     bool hasRecording = false;
 
+    void addToRecordedMidiNotes(bool isOn, uint8_t note, uint8_t velocity, uint8_t channel);
     void deleteRecording();
     void startRecording();
     void completeRecording();

@@ -83,25 +83,28 @@ void MidiRecorder::recordNote(bool isOn, uint8_t note, uint8_t velocity, uint8_t
     case WaitStartRecording:
     {
         startRecording();
-        MidiNoteRecord *noteRecord = new MidiNoteRecord(isOn, note, velocity, channel, millis() - startRecordingTimestamp);
-        recordedMidiNotes.push_back(noteRecord);
+        addToRecordedMidiNotes(isOn, note, velocity, channel);
         break;
     }
 
     case Recording:
     {
-        MidiNoteRecord *noteRecord = new MidiNoteRecord(isOn, note, velocity, channel, millis() - startRecordingTimestamp);
-        recordedMidiNotes.push_back(noteRecord);
-        Serial.print(isOn);
-        Serial.print(" ");
-        Serial.println(millis() - startRecordingTimestamp);
+        addToRecordedMidiNotes(isOn, note, velocity, channel);
         break;
     }
 
     case WaitEndRecording:
     {
-        completeRecording();
-        startPlaying();
+        // We want to stop recording only if the DJ press a pad
+        if (isOn)
+        {
+            completeRecording();
+            startPlaying();
+        }
+        else
+        {
+            addToRecordedMidiNotes(isOn, note, velocity, channel);
+        }
         break;
     }
 
@@ -128,9 +131,6 @@ void MidiRecorder::update()
     if (recordedMidiNotesIterator != recordedMidiNotes.end())
     {
         MidiNoteRecord *midiNoteRecord = *recordedMidiNotesIterator;
-        // Serial.println(midiNoteRecord->timestamp);
-        // Serial.println(oldUpdateTimestamp < midiNoteRecord->timestamp);
-        // Serial.println(currentTimestamp >= midiNoteRecord->timestamp);
         if (currentTimestamp >= midiNoteRecord->timestamp)
         {
             if (midiNoteRecord->isOn == true)
@@ -144,6 +144,12 @@ void MidiRecorder::update()
             recordedMidiNotesIterator++;
         }
     }
+}
+
+void MidiRecorder::addToRecordedMidiNotes(bool isOn, uint8_t note, uint8_t velocity, uint8_t channel)
+{
+    MidiNoteRecord *noteRecord = new MidiNoteRecord(isOn, note, velocity, channel, millis() - startRecordingTimestamp);
+    recordedMidiNotes.push_back(noteRecord);
 }
 
 void MidiRecorder::deleteRecording()

@@ -6,6 +6,7 @@ NoteModulator::NoteModulator()
     for(int i = 0; i < NUMBER_OF_MIDI_CHANNELS; i++) 
     {
         channelOctave[i] = DEFAULT_OCTAVE;
+        channelScale[i] = DEFAULT_SCALE;
     }
 }
 
