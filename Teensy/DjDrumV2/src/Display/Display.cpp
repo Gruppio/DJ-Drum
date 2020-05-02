@@ -57,9 +57,7 @@ void Display::writeTitleValue(const char title, uint8_t value) {
     }
 
     uint8_t val1 = value - (val100 * 100) - (val10 * 10);
-    if (val1 > 0) {
-        digits[3] = digitFor(val1);
-    }
+    digits[3] = digitFor(val1);
 
     needsUpdate = true;
 }
@@ -75,9 +73,7 @@ void Display::writeTitle2Value(const char title, const char title2, uint8_t valu
     }
 
     uint8_t val1 = value - (val10 * 10);
-    if (val1 > 0) {
-        digits[3] = digitFor(val1);
-    }
+    digits[3] = digitFor(val1);
 
     needsUpdate = true;
 }
@@ -119,10 +115,11 @@ byte Display::digitFor(char character) {
     case 'd': return 0b01011110;    // D
     case 'e': return 0b01111001;    // E
     case 'f': return 0b01110001;    // F
-    case 'g': return 0b01111101;    // G
+    case 'g': return 0b00111101;    // G
     case 'h': return 0b01110110;    // H
     case 'k': return 0b01110110;    // K
     case 'i': return 0b00000110;    // I
+    case 'j': return 0b00001110;    // J
     case 'l': return 0b00111000;    // L
     case 'm': return 0b00110111;    // M
     case 'n': return 0b01010100;    // N
@@ -140,6 +137,7 @@ byte Display::digitFor(char character) {
     case 'z': return 0b01011011;    // Z
     case '.': return 0b10000000;    // .
     case '=': return 0b01001001;    // =
+    case '#': return 0b01110110;    // H
   }
   return 0b00000000;
 }

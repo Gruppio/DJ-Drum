@@ -2,6 +2,11 @@
 
 Core::Core()
 {
+    // for(int i = 0; i < NUM_PADS; i++) {
+    //     uint8_t note = noteModulator->noteForPad(i);
+    //     NoteSymbol noteSymbol = noteSymbolForNote(note);
+    //     padLeds->turnOffPad(i, noteSymbol);
+    // }
 }
 
 void Core::padPressed(int pad, uint8_t velocity)
@@ -9,6 +14,9 @@ void Core::padPressed(int pad, uint8_t velocity)
     uint8_t note = noteModulator->noteForPad(pad);
     uint8_t midiChannel = noteModulator->getChannel();
     midi->sendNote(note, velocity, midiChannel, noteDuration);
+    displayWriteNote(note);
+
+    //padLeds->turnOnPad(pad, 0);
 }
 
 void Core::update()
@@ -30,7 +38,7 @@ void Core::incrChannel()
 
 void Core::decrChannel()
 {
-    noteModulator->decrIntonation();
+    noteModulator->decrChannel();
     display->writeTitle2Value('c', 'h', noteModulator->getChannel());
 }
 
@@ -61,13 +69,13 @@ void Core::decrScale()
 void Core::incrIntonation()
 {
     noteModulator->incrIntonation();
-    display->writeTitle2Value('i', 'n', noteModulator->getIntonation());
+    displayWriteNote(noteModulator->getIntonation());
 }
 
 void Core::decrIntonation()
 {
     noteModulator->decrIntonation();
-    display->writeTitle2Value('i', 'n', noteModulator->getIntonation());
+    displayWriteNote(noteModulator->getIntonation());
 }
 
 void Core::displayWriteScale() 
@@ -75,9 +83,7 @@ void Core::displayWriteScale()
     Scale scale = noteModulator->getScale();
     switch (scale)
     {
-    case Normal:
-        display->write("norm");
-        break;
+    case Normal: display->write("norm"); break;
     
     case Major:
         display->write("majo");
@@ -90,4 +96,29 @@ void Core::displayWriteScale()
     default:
         break;
     }
+}
+
+void Core::displayWriteNote(byte note) 
+{
+    NoteSymbol noteSymbol = noteSymbolForNote(note);
+    switch (noteSymbol)
+    {
+    case C: display->write("do c"); break;
+    case Cd: display->write("d#c#"); break;
+    case D: display->write("re d"); break;
+    case Dd: display->write("r#c#"); break;
+    case E: display->write("mi e"); break;
+    case F: display->write("fa f"); break;
+    case Fd: display->write("f#f#"); break;
+    case G: display->write("solg"); break;
+    case Gd: display->write("s#g#"); break;
+    case A: display->write("la a"); break;
+    case Ad: display->write("l#a#"); break;
+    case B: display->write("si b"); break;
+    }
+}
+
+NoteSymbol Core::noteSymbolForNote(byte note)
+{
+  return NoteSymbol(note % 12);
 }

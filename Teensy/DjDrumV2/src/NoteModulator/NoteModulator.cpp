@@ -72,7 +72,7 @@ void NoteModulator::incrOctave()
 
 void NoteModulator::decrOctave()
 {
-    channelOctave[channel] = constrain(channelOctave[channel] + 1, 0, NUMBER_OF_OCTAVES);
+    channelOctave[channel] = constrain(channelOctave[channel] - 1, 0, NUMBER_OF_OCTAVES);
 }
 
 void NoteModulator::incrScale()

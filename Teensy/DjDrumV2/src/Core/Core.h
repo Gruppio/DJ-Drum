@@ -6,6 +6,8 @@
 #include "Midi/Midi.h"
 #include "Display/Display.h"
 #include "NoteModulator/NoteModulator.h"
+#include "Models/NoteSymbol.h"
+#include "PadLeds/PadLeds.h"
 
 class Core {
 public:
@@ -29,8 +31,11 @@ public:
 
 protected:
     Midi *midi = new Midi();
+    //PadLeds *padLeds = new PadLeds();
     int noteDuration = 1000;
     void displayWriteScale();
+    void displayWriteNote(byte note);
+    NoteSymbol noteSymbolForNote(byte note);
 };
 
 #endif

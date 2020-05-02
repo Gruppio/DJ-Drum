@@ -4,9 +4,8 @@
 #include "Core/Core.h"
 #include "Throttle.h"
 
-#define DEBOUNCE_TIME 10
-#define PAD_ACTIVATION_THRESHOLD 200
-
+#define DEBOUNCE_TIME 25
+#define PAD_ACTIVATION_THRESHOLD 400 //200
 Core core;
 AnalogThrottle pads[NUM_PADS];
 Throttle decrScaleButton(PIN_BUTTON1, INPUT_PULLUP, 100);
@@ -52,6 +51,11 @@ void setupInternalLed()
   pinMode(LED_BUILTIN, OUTPUT);
 }
 
+void setupPadLeds()
+{
+  pinMode(PIN_RGB1, OUTPUT);
+}
+
 void setupI2C()
 {
   pinMode(PIN_SDA, OUTPUT);
@@ -67,6 +71,7 @@ void setup()
 {
   setupPads();
   setupInternalLed();
+  setupPadLeds();
   setupI2C();
   setupSerial();
 }
@@ -108,11 +113,11 @@ void loop()
   if(decrOctaveButton.fell()) { core.decrOctave(); };
   if(incrOctaveButton.fell()) { core.incrOctave(); };
   if(decrIntonationButton.fell()) { core.decrIntonation(); };
-  if(incrIntonationButton.fell()) { core.incrOctave(); };
+  if(incrIntonationButton.fell()) { core.incrIntonation(); };
 
   core.update();
 
-  if (everyLoop(10))
+  if (everyLoop(50))
     core.updateDisplay();
 
   loopCount++;
