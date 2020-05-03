@@ -28,6 +28,7 @@ public:
     void didPressRecording();
     void didReleaseRecording();
     void setNoteDuration(int duration);
+    void setNoteVelocity(uint8_t velocity);
 
 public:
     
@@ -37,6 +38,7 @@ public:
 
 protected:
     int noteDuration = 400;
+    uint8_t noteVelocity = 127;
     Midi *midi = new Midi(midiRecorder);
     //PadLeds *padLeds = new PadLeds();
     void displayWriteScale();

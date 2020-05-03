@@ -5,7 +5,7 @@
 #include "Throttle.h"
 
 #define DEBOUNCE_TIME 50
-#define PAD_ACTIVATION_THRESHOLD 350 //200
+#define PAD_ACTIVATION_THRESHOLD 250 //200
 Core core;
 AnalogThrottle pads[NUM_PADS];
 Throttle decrScaleButton(PIN_BUTTON6, INPUT_PULLUP, 100);
@@ -52,6 +52,7 @@ void setupPads()
 void setupPotentiometers()
 {
   pinMode(PIN_VOLUME_POTENTIOMETER, INPUT);
+  pinMode(PIN_VELOCITY_POTENTIOMETER, INPUT);
 }
 
 void setupInternalLed()
@@ -85,12 +86,23 @@ void setup()
   setupSerial();
 }
 
-int oldNoteDuration = 0;
+int oldDurationReadValue = 0;
 void updateNoteDuration() {
-  int noteDuration = map(analogRead(PIN_VOLUME_POTENTIOMETER), 0, 1024, 80, 2000);
-  if (abs(noteDuration - oldNoteDuration) > 20) {
+  int readValue = analogRead(PIN_VOLUME_POTENTIOMETER);
+  if (abs(readValue - oldDurationReadValue) > 10) {
+    int noteDuration = map(readValue, 0, 1024, 0, 2000);
     core.setNoteDuration(noteDuration);
-    oldNoteDuration = noteDuration;
+    oldDurationReadValue = readValue;
+  }
+}
+
+int oldVelocityReadValue = 0;
+void updateNoteVelocity() {
+  int readValue = analogRead(PIN_VELOCITY_POTENTIOMETER);
+  if (abs(readValue - oldVelocityReadValue) > 10) {
+    int noteVelocity = map(readValue, 0, 1024, 0, 127);
+    core.setNoteVelocity((uint8_t) noteVelocity);
+    oldVelocityReadValue = readValue;
   }
 }
 
@@ -112,9 +124,9 @@ void loop()
 
     if (pads[i].fell())
     {
-      int intensity = pads[i].intensity();
-      int velocity = computeMidiVelocityFromIntensity(intensity);
-      core.padPressed(i, velocity);
+      //int intensity = pads[i].intensity();
+      //int velocity = computeMidiVelocityFromIntensity(intensity);
+      core.padPressed(i, 0);
     }
   }
 
@@ -140,8 +152,10 @@ void loop()
   if(recordingButton.fell()) { core.didPressRecording(); };
   if(recordingButton.rose()) { core.didReleaseRecording(); };
 
-  if (everyLoop(50))
+  if (everyLoop(50)) {
     updateNoteDuration();
+    updateNoteVelocity();
+  }
 
   core.update();
 

@@ -11,9 +11,10 @@ Core::Core()
 
 void Core::padPressed(int pad, uint8_t velocity)
 {
+    // WARNING the velocity parameter is not used, it is used the parameter noteVelocity
     uint8_t note = noteModulator->noteForPad(pad);
     uint8_t midiChannel = noteModulator->getChannel();
-    midi->sendNote(note, velocity, midiChannel, noteDuration);
+    midi->sendNote(note, noteVelocity, midiChannel, noteDuration);
     displayWriteNote(note);
 
     //padLeds->turnOnPad(pad, 0);
@@ -93,6 +94,12 @@ void Core::setNoteDuration(int duration)
 {
     noteDuration = duration;
     display->writeValue(duration);
+}
+
+void Core::setNoteVelocity(uint8_t velocity)
+{
+    noteVelocity = velocity;
+    display->writeTitleValue('v', noteVelocity);
 }
 
 void Core::displayWriteScale() 
