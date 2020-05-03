@@ -5,7 +5,7 @@
 #include "Throttle.h"
 
 #define DEBOUNCE_TIME 50
-#define PAD_ACTIVATION_THRESHOLD 250 //200
+#define PAD_ACTIVATION_THRESHOLD 300
 Core core;
 AnalogThrottle pads[NUM_PADS];
 Throttle decrScaleButton(PIN_BUTTON6, INPUT_PULLUP, 100);
