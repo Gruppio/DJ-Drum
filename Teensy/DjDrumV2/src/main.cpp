@@ -3,6 +3,7 @@
 #include "AnalogThrottle/AnalogThrottle.h"
 #include "Core/Core.h"
 #include "Throttle.h"
+#include <Adafruit_NeoPixel.h>
 
 #define DEBOUNCE_TIME 50
 #define PAD_ACTIVATION_THRESHOLD 350
@@ -17,6 +18,8 @@ Throttle incrIntonationButton(PIN_BUTTON1, INPUT_PULLUP, 100);
 Throttle decrChannelButton(PIN_FOOTSWITCH1, INPUT_PULLUP, 100);
 Throttle incrChannelButton(PIN_FOOTSWITCH2, INPUT_PULLUP, 100);
 Throttle recordingButton(PIN_FOOTSWITCH4, INPUT_PULLUP, 100);
+
+Adafruit_NeoPixel pixels(10, PIN_RGB1, NEO_GRB + NEO_KHZ800);
 
 uint8_t pinPads[] = {
     PIN_PAD1,
@@ -83,7 +86,9 @@ void setup()
   setupInternalLed();
   setupPadLeds();
   setupI2C();
-  setupSerial();
+  //setupSerial();
+  delay(2000);
+  pixels.begin();
 }
 
 int oldDurationReadValue = 0;
@@ -163,4 +168,12 @@ void loop()
     core.updateDisplay();
 
   loopCount++;
+
+  pixels.clear();
+  for(int i=0; i<10; i++) { // For each pixel...
+    pixels.setPixelColor(i, pixels.Color(0, 150, 0));
+
+    pixels.show();
+    delay(500);
+  }
 }
