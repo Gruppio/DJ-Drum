@@ -102,7 +102,7 @@ void getLedIndexes(int pad, int &tl, int &ml, int &bl, int &tr, int &mr, int &br
   }
   else
   {
-    baseIndex = (12 * 6) + (pad - 6) * 6 + 1;
+    baseIndex = pad * 6;
     tl = baseIndex + 0;
     ml = baseIndex + 1;
     bl = baseIndex + 2;
