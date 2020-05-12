@@ -8,12 +8,13 @@
 #include "NoteModulator/NoteModulator.h"
 #include "Models/NoteSymbol.h"
 #include "MidiRecorder/MidiRecorder.h"
-#include "PadLeds/PadLeds.h"
+#include "NoteEncoder/NoteEncoder.h"
 
 class Core {
 public:
     Core();
     void padPressed(int pad, uint8_t velocity);
+    void padReleased(int pad);
     void update();
     void updateDisplay();
 
@@ -40,6 +41,7 @@ protected:
     int noteDuration = 400;
     uint8_t noteVelocity = 127;
     Midi *midi = new Midi(midiRecorder);
+    NoteEncoder *noteEncoder = new NoteEncoder();
     //PadLeds *padLeds = new PadLeds();
     void displayWriteScale();
     void displayWriteNote(byte note);

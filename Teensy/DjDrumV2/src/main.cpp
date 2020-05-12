@@ -61,11 +61,6 @@ void setupInternalLed()
   pinMode(LED_BUILTIN, OUTPUT);
 }
 
-void setupPadLeds()
-{
-  pinMode(PIN_RGB1, OUTPUT);
-}
-
 void setupI2C()
 {
   pinMode(PIN_SDA, OUTPUT);
@@ -74,7 +69,9 @@ void setupI2C()
 
 void setupSerial()
 {
+  pinMode(PIN_TX, OUTPUT);
   Serial.begin(9600);
+  Serial1.begin(9600);
 }
 
 void setup()
@@ -82,7 +79,6 @@ void setup()
   setupPads();
   setupPotentiometers();
   setupInternalLed();
-  setupPadLeds();
   setupI2C();
   setupSerial();
 }
@@ -128,6 +124,11 @@ void loop()
       //int intensity = pads[i].intensity();
       //int velocity = computeMidiVelocityFromIntensity(intensity);
       core.padPressed(i, 0);
+    }
+
+    if (pads[i].rose()) 
+    {
+      core.padReleased(i);
     }
   }
 

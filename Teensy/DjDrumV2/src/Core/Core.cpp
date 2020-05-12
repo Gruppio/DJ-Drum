@@ -15,9 +15,15 @@ void Core::padPressed(int pad, uint8_t velocity)
     uint8_t note = noteModulator->noteForPad(pad);
     uint8_t midiChannel = noteModulator->getChannel();
     midi->sendNote(note, noteVelocity, midiChannel, noteDuration);
+    Serial1.write((uint8_t)noteEncoder->encode(note, pad));
     displayWriteNote(note);
 
     //padLeds->turnOnPad(pad, 0);
+}
+
+void Core::padReleased(int pad)
+{
+    Serial1.write((uint8_t)noteEncoder->encode(0, pad));
 }
 
 void Core::update()
