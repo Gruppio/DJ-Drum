@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
-#include "Midi/Midi.h"
+#include "MidiNoteTimer/MidiNoteTimer.h"
 #include "Display/Display.h"
 #include "NoteModulator/NoteModulator.h"
 #include "Models/NoteSymbol.h"
@@ -40,7 +40,7 @@ public:
 protected:
     int noteDuration = 400;
     uint8_t noteVelocity = 127;
-    Midi *midi = new Midi(midiRecorder);
+    MidiNoteTimer *midi = new MidiNoteTimer(midiRecorder);
     NoteEncoder *noteEncoder = new NoteEncoder();
     //PadLeds *padLeds = new PadLeds();
     void displayWriteScale();

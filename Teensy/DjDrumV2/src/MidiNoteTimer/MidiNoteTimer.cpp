@@ -1,12 +1,12 @@
 
-#include "Midi.h"
+#include "MidiNoteTimer.h"
 
-Midi::Midi(MidiRecorder *midiRecorder)
+MidiNoteTimer::MidiNoteTimer(MidiRecorder *midiRecorder)
 {
     this->midiRecorder = midiRecorder;
 }
 
-void Midi::sendNoteOn(uint8_t note, uint8_t velocity, uint8_t channel)
+void MidiNoteTimer::sendNoteOn(uint8_t note, uint8_t velocity, uint8_t channel)
 {
     usbMIDI.sendNoteOn(note, velocity, channel);
     midiRecorder->recordNote(true, note, velocity, channel);
@@ -22,7 +22,7 @@ void Midi::sendNoteOn(uint8_t note, uint8_t velocity, uint8_t channel)
     }
 }
 
-void Midi::sendNoteOff(uint8_t note, uint8_t velocity, uint8_t channel)
+void MidiNoteTimer::sendNoteOff(uint8_t note, uint8_t velocity, uint8_t channel)
 {
     usbMIDI.sendNoteOff(note, velocity, channel);
     midiRecorder->recordNote(false, note, velocity, channel);
@@ -38,14 +38,14 @@ void Midi::sendNoteOff(uint8_t note, uint8_t velocity, uint8_t channel)
     }
 }
 
-void Midi::sendNote(uint8_t note, uint8_t velocity, uint8_t channel, int duration)
+void MidiNoteTimer::sendNote(uint8_t note, uint8_t velocity, uint8_t channel, int duration)
 {
     sendNoteOn(note, velocity, channel);
     MidiNoteRecord *midiNoteOffRecord = new MidiNoteRecord(false, note, velocity, channel, millis() + (unsigned long) duration);
     scheduledMidiNoteOff.push_back(midiNoteOffRecord);
 }
 
-void Midi::update()
+void MidiNoteTimer::update()
 {
     while (usbMIDI.read())
     {
@@ -63,7 +63,7 @@ void Midi::update()
     }
 }
 
-int Midi::numberOfNotesCurrenltyPlaying()
+int MidiNoteTimer::numberOfNotesCurrenltyPlaying()
 {
     return _numberOfNotesCurrenltyPlaying;
 }

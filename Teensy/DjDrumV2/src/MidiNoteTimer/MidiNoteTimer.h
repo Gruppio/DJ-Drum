@@ -11,10 +11,10 @@
 
 #define DEBUG false
 
-class Midi
+class MidiNoteTimer
 {
 public:
-    Midi(MidiRecorder *midiRecorder);
+    MidiNoteTimer(MidiRecorder *midiRecorder);
     void sendNote(uint8_t note, uint8_t velocity, uint8_t channel, int duration);
     void update();
     int numberOfNotesCurrenltyPlaying();
