@@ -51,6 +51,7 @@ protected:
     void displayWriteScale();
     void displayWriteNote(byte note);
     NoteSymbol noteSymbolForNote(byte note);
+    void updateAllLightColors();
 };
 
 #endif

@@ -16,8 +16,6 @@ void Core::padPressed(int pad, uint8_t velocity)
     uint8_t midiChannel = noteModulator->getChannel();
     midiNoteTimer->sendNote(note, noteVelocity, midiChannel, noteDuration);
     displayWriteNote(note);
-
-    //padLeds->turnOnPad(pad, 0);
 }
 
 void Core::update()
@@ -37,12 +35,14 @@ void Core::incrChannel()
 {
     noteModulator->incrChannel();
     display->writeTitle2Value('c', 'h', noteModulator->getChannel());
+    updateAllLightColors();
 }
 
 void Core::decrChannel()
 {
     noteModulator->decrChannel();
     display->writeTitle2Value('c', 'h', noteModulator->getChannel());
+    updateAllLightColors();
 }
 
 void Core::incrOctave()
@@ -61,24 +61,28 @@ void Core::incrScale()
 {
     noteModulator->incrScale();
     displayWriteScale();
+    updateAllLightColors();
 }
 
 void Core::decrScale()
 {
     noteModulator->decrScale();
     displayWriteScale();
+    updateAllLightColors();
 }
 
 void Core::incrIntonation()
 {
     noteModulator->incrIntonation();
     displayWriteNote(noteModulator->getIntonation());
+    updateAllLightColors();
 }
 
 void Core::decrIntonation()
 {
     noteModulator->decrIntonation();
     displayWriteNote(noteModulator->getIntonation());
+    updateAllLightColors();
 }
 
 void Core::didPressRecording() 
@@ -146,4 +150,15 @@ void Core::displayWriteNote(byte note)
 NoteSymbol Core::noteSymbolForNote(byte note)
 {
   return NoteSymbol(note % 12);
+}
+
+void Core::updateAllLightColors() {
+    for(int pad = 0; pad < NUM_PADS; pad++) {
+        uint8_t note = noteModulator->noteForPad(pad);
+        uint8_t midiChannel = noteModulator->getChannel();
+        lightController->sendNoteOn(note, noteVelocity, midiChannel);
+        delay(5);
+        lightController->sendNoteOff(note, noteVelocity, midiChannel);
+        delay(5);
+    }
 }
