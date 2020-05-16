@@ -125,11 +125,6 @@ void loop()
       //int velocity = computeMidiVelocityFromIntensity(intensity);
       core.padPressed(i, 0);
     }
-
-    if (pads[i].rose()) 
-    {
-      core.padReleased(i);
-    }
   }
 
   // Update Buttons

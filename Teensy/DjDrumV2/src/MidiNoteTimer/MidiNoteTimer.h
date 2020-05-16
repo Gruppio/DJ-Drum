@@ -7,20 +7,20 @@
 
 #include <list>
 #include "Models/MidiNoteRecord.h"
-#include "MidiRecorder/MidiRecorder.h"
+#include "Midi/Midi.h"
 
 #define DEBUG false
 
 class MidiNoteTimer
 {
 public:
-    MidiNoteTimer(MidiRecorder *midiRecorder);
+    MidiNoteTimer(Midi *midi);
     void sendNote(uint8_t note, uint8_t velocity, uint8_t channel, int duration);
     void update();
     int numberOfNotesCurrenltyPlaying();
 
 protected:
-    MidiRecorder *midiRecorder;
+    Midi *midi;
     int _numberOfNotesCurrenltyPlaying = 0;
     std::list<MidiNoteRecord *> scheduledMidiNoteOff;
 

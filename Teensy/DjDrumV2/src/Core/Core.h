@@ -18,7 +18,6 @@ class Core {
 public:
     Core();
     void padPressed(int pad, uint8_t velocity);
-    void padReleased(int pad);
     void update();
     void updateDisplay();
 
@@ -44,10 +43,10 @@ public:
 protected:
     int noteDuration = 400;
     uint8_t noteVelocity = 127;
-    MidiNoteTimer *midiNoteTimer = new MidiNoteTimer(midiRecorder);
     NoteEncoder *noteEncoder = new NoteEncoder();
     LightController *lightController = new LightController(noteEncoder, noteModulator);
-     Midi *midi = new LightControllerDecorator(lightController, new RecorderMidiDecorator(midiRecorder, new Midi()));
+    Midi *midi = new LightControllerDecorator(lightController, new RecorderMidiDecorator(midiRecorder, new Midi()));
+    MidiNoteTimer *midiNoteTimer = new MidiNoteTimer(midi);
     
     void displayWriteScale();
     void displayWriteNote(byte note);

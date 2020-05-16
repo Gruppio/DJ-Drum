@@ -13,6 +13,7 @@ class LightController
 protected:
     NoteEncoder *noteEncoder;
     NoteModulator *noteModulator;
+    bool debug = false;
 
 public:
     LightController(NoteEncoder *noteEncoder, NoteModulator *noteModulator);

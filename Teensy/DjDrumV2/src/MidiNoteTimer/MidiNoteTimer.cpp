@@ -1,15 +1,14 @@
 
 #include "MidiNoteTimer.h"
 
-MidiNoteTimer::MidiNoteTimer(MidiRecorder *midiRecorder)
+MidiNoteTimer::MidiNoteTimer(Midi *midi)
 {
-    this->midiRecorder = midiRecorder;
+    this->midi = midi;
 }
 
 void MidiNoteTimer::sendNoteOn(uint8_t note, uint8_t velocity, uint8_t channel)
 {
-    usbMIDI.sendNoteOn(note, velocity, channel);
-    midiRecorder->recordNote(true, note, velocity, channel);
+    midi->sendNoteOn(note, velocity, channel);
     _numberOfNotesCurrenltyPlaying++;
     if (DEBUG)
     {
@@ -24,8 +23,7 @@ void MidiNoteTimer::sendNoteOn(uint8_t note, uint8_t velocity, uint8_t channel)
 
 void MidiNoteTimer::sendNoteOff(uint8_t note, uint8_t velocity, uint8_t channel)
 {
-    usbMIDI.sendNoteOff(note, velocity, channel);
-    midiRecorder->recordNote(false, note, velocity, channel);
+    midi->sendNoteOff(note, velocity, channel);
     _numberOfNotesCurrenltyPlaying--;
     if (DEBUG)
     {
