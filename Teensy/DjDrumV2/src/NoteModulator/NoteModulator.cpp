@@ -19,6 +19,21 @@ uint8_t NoteModulator::noteForPad(int pad)
     return (uint8_t)note;
 }
 
+int NoteModulator::padForNote(uint8_t note)
+{
+    int octave = channelOctave[channel];
+    int intonation = channelIntonation[channel];
+    int intNote = (int)note;
+    int padOffset = intNote - ((octave + 1) * 12) - intonation;
+    
+    for(int pad = 0; pad < NUMBER_OF_PADS; pad++) {
+        if (padOffset == padOffsets()[pad])
+            return pad;
+    }
+    
+    return -1;
+}
+
 int* NoteModulator::padOffsets() {
     Scale scale = getScale();
     switch (scale)

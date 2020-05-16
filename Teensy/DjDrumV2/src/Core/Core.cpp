@@ -14,7 +14,7 @@ void Core::padPressed(int pad, uint8_t velocity)
     // WARNING the velocity parameter is not used, it is used the parameter noteVelocity
     uint8_t note = noteModulator->noteForPad(pad);
     uint8_t midiChannel = noteModulator->getChannel();
-    midi->sendNote(note, noteVelocity, midiChannel, noteDuration);
+    midiNoteTimer->sendNote(note, noteVelocity, midiChannel, noteDuration);
     Serial1.write((uint8_t)noteEncoder->encode(note, pad));
     displayWriteNote(note);
 
@@ -28,13 +28,14 @@ void Core::padReleased(int pad)
 
 void Core::update()
 {
-    midiRecorder->update();
     midi->update();
+    midiRecorder->update();
+    midiNoteTimer->update();
 }
 
 void Core::updateDisplay()
 {
-    digitalWrite(LED_BUILTIN, midi->numberOfNotesCurrenltyPlaying() > 0);
+    digitalWrite(LED_BUILTIN, midiNoteTimer->numberOfNotesCurrenltyPlaying() > 0);
     display->update();
 }
 

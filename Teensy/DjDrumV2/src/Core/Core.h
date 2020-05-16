@@ -9,6 +9,7 @@
 #include "Models/NoteSymbol.h"
 #include "MidiRecorder/MidiRecorder.h"
 #include "NoteEncoder/NoteEncoder.h"
+#include "Midi/Midi.h"
 
 class Core {
 public:
@@ -40,7 +41,8 @@ public:
 protected:
     int noteDuration = 400;
     uint8_t noteVelocity = 127;
-    MidiNoteTimer *midi = new MidiNoteTimer(midiRecorder);
+    Midi *midi = new Midi();
+    MidiNoteTimer *midiNoteTimer = new MidiNoteTimer(midiRecorder);
     NoteEncoder *noteEncoder = new NoteEncoder();
     //PadLeds *padLeds = new PadLeds();
     void displayWriteScale();

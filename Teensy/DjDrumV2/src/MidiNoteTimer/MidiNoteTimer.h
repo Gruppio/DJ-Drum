@@ -1,5 +1,5 @@
-#ifndef MIDI_H
-#define MIDI_H
+#ifndef MIDI_NOTE_TIMER_H
+#define MIDI_NOTE_TIMER_H
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"

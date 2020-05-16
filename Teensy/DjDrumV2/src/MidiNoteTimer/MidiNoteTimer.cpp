@@ -47,10 +47,6 @@ void MidiNoteTimer::sendNote(uint8_t note, uint8_t velocity, uint8_t channel, in
 
 void MidiNoteTimer::update()
 {
-    while (usbMIDI.read())
-    {
-    }
-
     if (scheduledMidiNoteOff.empty())
         return;
 
