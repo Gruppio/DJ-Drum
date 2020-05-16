@@ -6,7 +6,7 @@
 #define NUM_LEDS 108
 CRGB leds[NUM_LEDS];
 
-#define LOW_LUMINOSITY 10
+#define LOW_LUMINOSITY 90
 #define HIGH_LUMINOSITY 255
 
 #define HUE_DO 140
@@ -66,17 +66,24 @@ void getLedIndexes(int pad, int &tl, int &ml, int &bl, int &tr, int &mr, int &br
   }
 }
 
+void reduceBrightnessToLed(int ledIndex) {
+  CRGB rgb(leds[ledIndex].r, leds[ledIndex].g, leds[ledIndex].b);
+  CHSV hsv = rgb2hsv_approximate(rgb);
+  hsv.s = 255;
+  hsv.v = LOW_LUMINOSITY;
+  leds[ledIndex] = hsv;
+}
+
 void setNoteToPad(uint8_t note, uint8_t pad) {
   int tl, ml, bl, tr, mr, br = 0;
   getLedIndexes(pad, tl, ml, bl, tr, mr, br);
   if (note == 0) {
-    uint8_t fade = 255 - LOW_LUMINOSITY;
-    leds[tl].fadeLightBy(fade);
-    leds[ml].fadeLightBy(fade);
-    leds[bl].fadeLightBy(fade);
-    leds[tr].fadeLightBy(fade);
-    leds[mr].fadeLightBy(fade);
-    leds[br].fadeLightBy(fade);
+    reduceBrightnessToLed(tl);
+    reduceBrightnessToLed(ml);
+    reduceBrightnessToLed(bl);
+    reduceBrightnessToLed(tr);
+    reduceBrightnessToLed(mr);
+    reduceBrightnessToLed(br);
   } else {
     uint8_t hues[2] = { noteHues[note][0], noteHues[note][1] };
     leds[tl].setHue(hues[0]);
