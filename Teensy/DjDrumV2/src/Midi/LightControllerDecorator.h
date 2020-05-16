@@ -18,7 +18,6 @@ public:
     LightControllerDecorator(LightController *lightController, Midi *midi);
     virtual void sendNoteOn(uint8_t note, uint8_t velocity, uint8_t channel);
     virtual void sendNoteOff(uint8_t note, uint8_t velocity, uint8_t channel);
-    virtual void update();
 };
 
 #endif

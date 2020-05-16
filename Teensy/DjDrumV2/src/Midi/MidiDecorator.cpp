@@ -1,6 +1,11 @@
 
 #include "MidiDecorator.h"
 
+MidiDecorator::MidiDecorator(Midi *midi)
+{
+    this->midi = midi;
+}
+
 void MidiDecorator::sendNoteOn(uint8_t note, uint8_t velocity, uint8_t channel)
 {
     midi->sendNoteOn(note, velocity, channel);

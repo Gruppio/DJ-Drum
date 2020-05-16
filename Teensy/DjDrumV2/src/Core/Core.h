@@ -10,6 +10,9 @@
 #include "MidiRecorder/MidiRecorder.h"
 #include "NoteEncoder/NoteEncoder.h"
 #include "Midi/Midi.h"
+#include "LightController/LightController.h"
+#include "Midi/RecorderMidiDecorator.h"
+#include "Midi/LightControllerDecorator.h"
 
 class Core {
 public:
@@ -41,10 +44,11 @@ public:
 protected:
     int noteDuration = 400;
     uint8_t noteVelocity = 127;
-    Midi *midi = new Midi();
     MidiNoteTimer *midiNoteTimer = new MidiNoteTimer(midiRecorder);
     NoteEncoder *noteEncoder = new NoteEncoder();
-    //PadLeds *padLeds = new PadLeds();
+    LightController *lightController = new LightController(noteEncoder, noteModulator);
+     Midi *midi = new LightControllerDecorator(lightController, new RecorderMidiDecorator(midiRecorder, new Midi()));
+    
     void displayWriteScale();
     void displayWriteNote(byte note);
     NoteSymbol noteSymbolForNote(byte note);
