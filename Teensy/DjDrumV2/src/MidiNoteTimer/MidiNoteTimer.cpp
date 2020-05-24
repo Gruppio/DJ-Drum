@@ -39,7 +39,15 @@ void MidiNoteTimer::sendNoteOff(uint8_t note, uint8_t velocity, uint8_t channel)
 void MidiNoteTimer::sendNote(uint8_t note, uint8_t velocity, uint8_t channel, int duration)
 {
     sendNoteOn(note, velocity, channel);
-    MidiNoteRecord *midiNoteOffRecord = new MidiNoteRecord(false, note, velocity, channel, millis() + (unsigned long) duration);
+    unsigned long offTime = millis() + (unsigned long) duration;
+
+    for (std::list<MidiNoteRecord*>::iterator it = scheduledMidiNoteOff.begin(); it != scheduledMidiNoteOff.end(); ++it){
+        if((*it)->note == note) {
+            (*it)->timestamp = offTime;
+        }
+    }
+
+    MidiNoteRecord *midiNoteOffRecord = new MidiNoteRecord(false, note, velocity, channel, offTime);
     scheduledMidiNoteOff.push_back(midiNoteOffRecord);
 }
 
@@ -48,12 +56,14 @@ void MidiNoteTimer::update()
     if (scheduledMidiNoteOff.empty())
         return;
 
-    MidiNoteRecord *noteRecord = scheduledMidiNoteOff.front();
-    if (noteRecord->timestamp <= millis())
+    for (std::list<MidiNoteRecord *>::iterator it = scheduledMidiNoteOff.begin(); it != scheduledMidiNoteOff.end(); ++it)
     {
-        sendNoteOff(noteRecord->note, noteRecord->velocity, noteRecord->channel);
-        scheduledMidiNoteOff.pop_front();
-        delete (noteRecord);
+        if ((*it)->timestamp <= millis())
+        {
+            sendNoteOff((*it)->note, (*it)->velocity, (*it)->channel);
+            delete ((*it));
+            it = scheduledMidiNoteOff.erase(it);
+        }
     }
 }
 
